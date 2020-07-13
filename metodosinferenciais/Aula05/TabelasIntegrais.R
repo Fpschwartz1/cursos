@@ -23,6 +23,7 @@ q <- 510
 df <- rbind(df,data.frame(x=q, A.Esq=pnorm(q,mu,dp), A.Dir=1-pnorm(q,mu,dp)))
 View(df)
 
+
 mu <- 0; dp <- 1
 dnormal()
 q <- -0.01
