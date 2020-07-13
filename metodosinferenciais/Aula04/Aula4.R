@@ -55,3 +55,11 @@ va
 # desvio padrao
 dp <- sqrt(va)
 dp
+
+
+
+
+
+
+
+
