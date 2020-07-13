@@ -1,0 +1,146 @@
+---
+title: "Lab1"
+author: "Fabiano"
+date: "11/04/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Laboratório 1
+
+Este script contém o código referente ao Lab1.
+
+```{r}
+# remove as variáveis da memória
+rm(list = ls(all = TRUE)) 
+
+# lê arquivo de dados do TSE
+tse <- read.table("consulta_cand_2012_PR.txt",sep=";") # com fatores
+
+# mostra as seis primeiras linhas e cinco colunas
+head(tse[ , 1:5])
+
+nrow(tse) # qtd linhas
+ncol(tse) # qtd colunas
+dim(tse)  # qtd linhas e colunas
+
+# nominando as coluns do arquivo conforme dicionário de dados
+names(tse)<- 
+  c("DATA_GERACAO","HORA_GERACAO","ANO_ELEICAO","NUM_TURNO",
+    "DESCRICAO_ELEICAO","SIGLA_UF","SIGLA_UE","DESCRICAO_UE",
+    "CODIGO_CARGO","DESCRICAO_CARGO","NOME_CANDIDATO",
+    "SEQUENCIAL_CANDIDATO","NUMERO_CANDIDATO",
+    "NOME_URNA_CANDIDATO","COD_SITUACAO_CANDIDATURA",
+    "DES_SITUACAO_CANDIDATURA","NUMERO_PARTIDO",
+    "SIGLA_PARTIDO","NOME_PARTIDO","CODIGO_LEGENDA",
+    "SIGLA_LEGENDA","COMPOSICAO_LEGENDA","NOME_LEGENDA",
+    "CODIGO_OCUPACAO", "DESCRICAO_OCUPACAO","DATA_NASCIMENTO",
+    "NUM_TITULO_ELEITORAL_CANDIDATO","IDADE_DATA_ELEICAO",
+    "CODIGO_SEXO","DESCRICAO_SEXO","COD_GRAU_INSTRUCAO",
+    "DESCRICAO_GRAU_INSTRUCAO","CODIGO_ESTADO_CIVIL",
+    "DESCRICAO_ESTADO_CIVIL","CODIGO_NACIONALIDADE",
+    "DESCRICAO_NACIONALIDADE","SIGLA_UF_NASCIMENTO",
+    "CODIGO_MUNICIPIO_NASCIMENTO","NOME_MUNICIPIO_NASCIMENTO",
+    "DESPESA_MAX_CAMPANHA","COD_SIT_TOT_TURNO",
+    "DESC_SIT_TOT_TURNO")
+```
+
+### Estatísticas Descritivas
+
+```{r}
+# tabela de distribuição de frequências
+t  <- table(tse$DESCRICAO_ESTADO_CIVIL,tse$ANO_ELEICAO) # absoluta
+tr <- t / sum(t) # relativa
+ta <- t
+for (i in 2:length(ta)) { ta[i]=ta[i]+ta[i-1] } # acumulada
+tar <- ta / sum(t) # relativa acumulada
+
+df <- data.frame(cbind(t, tr, ta, tar))
+names(df) <- c("Absoluta", "Relativa", "Acumulada", "Rel. Acum.")
+
+df
+
+# novas tabelas de distribuição de frequência
+table(tse$DESCRICAO_ESTADO_CIVIL,tse$DESCRICAO_SEXO)
+
+table(tse$DESCRICAO_GRAU_INSTRUCAO,tse$DESCRICAO_SEXO)
+
+cbind(table(tse$DESCRICAO_GRAU_INSTRUCAO,tse$DESCRICAO_SEXO),
+      table(tse$DESCRICAO_GRAU_INSTRUCAO,tse$ANO_ELEICAO))
+```
+
+### Histogramas
+
+Explorando os histogramas.
+
+```{r}
+# data da eleição em 2012
+dteleicao <- as.Date("7/10/2012", format="%d/%m/%Y")
+# converte a data de nascimento do tse para o tipo data 
+dtnasc <- as.Date(tse$DATA_NASCIMENTO, format="%d/%m/%Y")
+
+# diferença em dias entre data da eleição e de nascimento
+idade2012 <- difftime(dteleicao, dtnasc, units="days")
+
+# retira parte fracionária
+idade2012 <- floor(as.numeric(idade2012 / 365.25))
+
+# histograma
+hist(idade2012, breaks=20, main="Candidatos do Paraná",
+     xlab="Idade",ylab="Frequencia", col="orange")
+
+tse[idade2012 > 120 , c("DATA_NASCIMENTO", "NOME_URNA_CANDIDATO")]
+
+# histograma
+hist(idade2012[idade2012 < 120], breaks=20, main="Candidatos do Paraná", xlab="Idade",ylab="Frequencia", col="orange")
+
+```
+
+### Medidas de Tendência Central e de Dispersão
+
+```{r}
+# medidas de tendência central
+
+# apenas as idades menores que 120 anos
+idade2012 <- idade2012[ idade2012 < 120] 
+
+# média
+mean(idade2012)
+
+# desvio padrão
+sd(idade2012)
+
+# mediana
+median(idade2012)
+
+# moda
+mod<-table(idade2012)
+mod[mod==max(mod)]
+
+# medidas de dispersao
+
+# Amplitude
+max(idade2012)-min(idade2012)
+
+# Amplitude interquartil
+q<-quantile(idade2012)
+q[[4]]-q[[2]]
+
+# Variância
+var(idade2012)
+
+# Desvio padrao
+sd(idade2012)
+
+# coeficiente de variaçao
+sd(idade2012)/mean(idade2012)
+
+# Quartis
+quantile(idade2012)
+
+# Percentis
+quantile(idade2012, probs = seq(0, 1, 0.01), na.rm = FALSE)
+```
