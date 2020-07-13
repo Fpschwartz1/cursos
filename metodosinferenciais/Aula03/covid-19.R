@@ -20,3 +20,7 @@ lines(density(n2),lwd=3,col="blue")
 legend(40,0.15,legend=c("sem isolamento", 
                 "isolamento horizontal"),
        fill = c(alpha("red", 0.3), alpha("blue", 0.4)))
+
+
+
+
