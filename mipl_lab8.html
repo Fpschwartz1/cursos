@@ -6,15 +6,15 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Mobirise v5.2.0, mobirise.com">
   <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:image:src" content="assets/images/mipl_lab1-meta.png">
-  <meta property="og:image" content="assets/images/mipl_lab1-meta.png">
-  <meta name="twitter:title" content="Lab 1 - Estatística Descritiva na prática">
+  <meta name="twitter:image:src" content="assets/images/mipl_lab8-meta.png">
+  <meta property="og:image" content="assets/images/mipl_lab8-meta.png">
+  <meta name="twitter:title" content="Lab 8 - Regressão Logística, construção do modelo">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
   <link rel="shortcut icon" href="assets/images/favicon-32x32.png" type="image/x-icon">
-  <meta name="description" content="Este é primeiro laboratório em que aprenderemos como reproduzir as técnicas de estatística descritiva utilizando scripts de código R e a tecnologia Markdown.">
+  <meta name="description" content="Neste laboratório apresentaremos o passo-a-passo da escolha dos preditores para um modelo de Regressão Logística. Serão utilizados a Estatística do Desvio, o Critério de Informação de Akaike e o Critério de Informação Baiesiano para auxiliar na decisão de incluir ou não vaiáveis ao modelo.">
   
   
-  <title>Lab 1 - Estatística Descritiva na prática</title>
+  <title>Lab 8 - Regressão Logística, construção do modelo</title>
   <link rel="stylesheet" href="assets/web/assets/mobirise-icons/mobirise-icons.css">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
@@ -31,7 +31,7 @@
 </head>
 <body>
   
-  <section class="menu cid-s4zGpBO16w" once="menu" id="menu1-1c">
+  <section class="menu cid-sg8xXwUm2e" once="menu" id="menu1-3j">
 
     
 
@@ -63,7 +63,7 @@
     </nav>
 </section>
 
-<section class="header1 cid-s4zGpExqPg" id="header16-1d">
+<section class="header1 cid-sg8xXyqwuZ" id="header16-3k">
 
     
 
@@ -72,9 +72,9 @@
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-md-10 align-center">
-                <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">Lab 1 - Estatística Descritiva na prática</h1>
+                <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">Lab 8 - Regressão Logística, construção do modelo</h1>
                 
-                <p class="mbr-text pb-3 mbr-fonts-style display-5">Este é o primeiro laboratório em que aprenderemos como reproduzir as técnicas de estatística descritiva utilizando scripts de código R e a tecnologia Markdown.</p>
+                <p class="mbr-text pb-3 mbr-fonts-style display-5">Neste laboratório apresentaremos o passo-a-passo da escolha dos preditores para um modelo de Regressão Logística. Serão utilizados a Estatística do Desvio, o Critério de Informação de Akaike e o Critério de Informação Baiesiano para auxiliar na decisão de incluir ou não vaiáveis ao modelo.</p>
                 
             </div>
         </div>
@@ -82,45 +82,45 @@
 
 </section>
 
-<section class="cid-s4zGpG6cvC" id="video3-1e">
+<section class="cid-sg8xXAwyrR" id="video3-3l">
 
     
     
     <figure class="mbr-figure align-center container">
         <div class="video-block" style="width: 100%;">
-            <div><iframe class="mbr-embedded-video" src="https://www.youtube.com/embed/Lbu8AcPQ2Y4?rel=0&amp;amp;showinfo=0&amp;autoplay=0&amp;loop=0" width="1280" height="720" frameborder="0" allowfullscreen></iframe></div>
+            <div><iframe class="mbr-embedded-video" src="https://www.youtube.com/embed/rH7viADJF3s?rel=0&amp;amp;showinfo=0&amp;autoplay=0&amp;loop=0" width="1280" height="720" frameborder="0" allowfullscreen></iframe></div>
         </div>
     </figure>
 </section>
 
-<section class="mbr-section content8 cid-s4zGpHHd5M" id="content8-1f">
+<section class="mbr-section content8 cid-sg8xXBZuwq" id="content8-3m">
 
     
 
     <div class="container">
         <div class="media-container-row title">
             <div class="col-12 col-md-8">
-                <div class="mbr-section-btn align-center"><a class="btn btn-primary display-4" href="https://github.com/Fpschwartz1/cursos/tree/master/metodosinferenciais/Lab01" target="_blank">Scripts R</a></div>
+                <div class="mbr-section-btn align-center"><a class="btn btn-primary display-4" href="https://github.com/Fpschwartz1/cursos/tree/master/metodosinferenciais/Lab08" target="_blank">Scripts R</a></div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="mbr-section content8 cid-s4Aec4p40v" id="content8-2d">
+<section class="mbr-section content8 cid-sg8xXDTcGb" id="content8-3n">
 
     
 
     <div class="container">
         <div class="media-container-row title">
             <div class="col-12 col-md-8">
-                <div class="mbr-section-btn align-center"><a class="btn btn-black-outline display-4" href="mipl_aula4.html">Aula anterior</a>
-                    <a class="btn btn-black-outline display-4" href="mipl.html">Curso</a> <a class="btn btn-black-outline display-4" href="mipl_aula5.html">Próxima aula</a></div>
+                <div class="mbr-section-btn align-center"><a class="btn btn-black-outline display-4" href="mipl_aula6.html">Aula anterior</a>
+                    <a class="btn btn-black-outline display-4" href="mipl.html">Curso</a> <a class="btn btn-black-outline display-4" href="mipl_aula15.html">Próxima aula</a></div>
             </div>
         </div>
     </div>
 </section>
 
-<section once="footers" class="cid-s4zGpJOyw9" id="footer6-1g">
+<section once="footers" class="cid-sg8xXFgHS4" id="footer6-3o">
 
     
 
@@ -133,7 +133,7 @@
             </div>
         </div>
     </div>
-</section><section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;"><a href="https://mobirise.site/o" style="flex: 1 1; height: 3rem; padding-left: 1rem;"></a><p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Start your own <a href="https://mobirise.site/y" style="color:#aaa;">site</a> with Mobirise</p></section><script src="assets/web/assets/jquery/jquery.min.js"></script>  <script src="assets/popper/popper.min.js"></script>  <script src="assets/bootstrap/js/bootstrap.min.js"></script>  <script src="assets/tether/tether.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/dropdown/js/nav-dropdown.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>  <script src="assets/viewportchecker/jquery.viewportchecker.js"></script>  <script src="assets/theme/js/script.js"></script>  
+</section><section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;"><a href="https://mobirise.site/m" style="flex: 1 1; height: 3rem; padding-left: 1rem;"></a><p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Create your own <a href="https://mobirise.site/y" style="color:#aaa;">website</a> with Mobirise</p></section><script src="assets/web/assets/jquery/jquery.min.js"></script>  <script src="assets/popper/popper.min.js"></script>  <script src="assets/bootstrap/js/bootstrap.min.js"></script>  <script src="assets/tether/tether.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/dropdown/js/nav-dropdown.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>  <script src="assets/viewportchecker/jquery.viewportchecker.js"></script>  <script src="assets/theme/js/script.js"></script>  
   
   
  <div id="scrollToTop" class="scrollToTop mbr-arrow-up"><a style="text-align: center;"><i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i></a></div>
