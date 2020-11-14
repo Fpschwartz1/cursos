@@ -1,0 +1,5 @@
+x <- seq(-1,10,0.01)
+y <- log(x)
+plot(x,y, type="l")
+lines(c(-2,12),c(0,0))
+grid()
