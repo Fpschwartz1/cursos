@@ -1,7 +1,7 @@
 {
   "settings": {
     "name": "Conhecimento e Formação - Fabiano Schwartz",
-    "currentPage": "page22.html",
+    "currentPage": "mipl_aula8.html",
     "theme": {
       "name": "mobirise4",
       "title": "Mobirise 4",
@@ -12344,7 +12344,7 @@
         }
       ]
     },
-    "page22.html": {
+    "mipl_aula8.html": {
       "settings": {
         "meta_descr": "Nesta aula estudaremos a estatística <i>t</i>, a distribuição de Student e como são definidos os intervalos de confiança para a realização de testes de hipótese. Serão apresentados os testes de grupos pareados e de grupos independentes, com variâncias iguais ou diferentes. Também serão apresentados os testes de Shapiro-Wilk e Kolmogorov-Smirnov para verificação da normalidade de uma distribuição de dados.",
         "title": "Aula 8 - Teste <i>t</i>-Student",
