@@ -6,15 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Mobirise v5.2.0, mobirise.com">
   <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:image:src" content="assets/images/echtd_aula2-meta.png">
-  <meta property="og:image" content="assets/images/echtd_aula2-meta.png">
-  <meta name="twitter:title" content="Aula 2 - Acelerador de Partículas">
+  <meta name="twitter:image:src" content="assets/images/mipl_lab7-meta.png">
+  <meta property="og:image" content="assets/images/mipl_lab7-meta.png">
+  <meta name="twitter:title" content="Lab 7 - Análise de Regressão Linear, base Prestige">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
   <link rel="shortcut icon" href="assets/images/favicon-32x32.png" type="image/x-icon">
-  <meta name="description" content="Esta aula apresenta um dispositivo desenvolvido para estimulação por microcorrentes, técnica que tem sido usada com sucesso como um tratamento complementar para diversas doenças e envolve a aplicação de tensões e correntes de magnitude semelhante àquelas geradas no interior das células durante a regeneração normal do tecido. Os resultados indicam que a resistência da pele nas áreas lesionadas diminui com o uso contínuo de estimulação por microcorrentes. A eficácia do método é especialmente relacionada ao alívio da dor.">
+  <meta name="description" content="Neste laboratório construiremos um modelo de regressão múltipla a partir da base de dados "Prestige", do pacote "car" da linguagem R.
+
+Apresentaremos o passo-a-passo da escolha dos preditores combinando técnicas matemáticas que nos permitem avaliar a redução da soma dos erros quadráticos, que define a qualidade da estimativa pontual, e a inflação da variância, que define o intervalo de confiança e a qualidade da inferência do modelo.">
   
   
-  <title>Aula 2 - Acelerador de Partículas</title>
+  <title>Lab 7 - Análise de Regressão Linear, base Prestige</title>
   <link rel="stylesheet" href="assets/web/assets/mobirise-icons/mobirise-icons.css">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
@@ -31,7 +33,7 @@
 </head>
 <body>
   
-  <section class="menu cid-sk88ECB1eg" once="menu" id="menu1-4c">
+  <section class="menu cid-sup3CxbS2P" once="menu" id="menu1-65">
 
     
 
@@ -63,7 +65,7 @@
     </nav>
 </section>
 
-<section class="header1 cid-sk88EDqTgL" id="header16-4d">
+<section class="header1 cid-sup3Cz8511" id="header16-66">
 
     
 
@@ -72,9 +74,9 @@
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-md-10 align-center">
-                <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">Aula 2 - Acelerador de Partículas</h1>
+                <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">Lab 7 - Análise de Regressão Linear, base Prestige</h1>
                 
-                <p class="mbr-text pb-3 mbr-fonts-style display-5">Esta aula apresenta um dispositivo desenvolvido para estimulação por microcorrentes, técnica que tem sido usada com sucesso como um tratamento complementar para diversas doenças e envolve a aplicação de tensões e correntes de magnitude semelhante àquelas geradas no interior das células durante a regeneração normal do tecido. Os resultados indicam que a resistência da pele nas áreas lesadas diminui com o uso contínuo de estimulação por microcorrentes. A eficácia do método é especialmente relacionada ao alívio da dor.&nbsp;</p>
+                <p class="mbr-text pb-3 mbr-fonts-style display-5">Neste laboratório construiremos um modelo de regressão múltipla a partir da base de dados "Prestige", do pacote "car" da linguagem R.&nbsp;Apresentaremos o passo-a-passo da escolha dos preditores combinando técnicas matemáticas que nos permitem avaliar a redução da soma dos erros quadráticos, que define a qualidade da estimativa pontual, e a inflação da variância, que define o intervalo de confiança e a qualidade da inferência do modelo.</p>
                 
             </div>
         </div>
@@ -82,31 +84,45 @@
 
 </section>
 
-<section class="cid-sk88EFfMt9" id="video3-4e">
+<section class="cid-sup3CB8QeR" id="video3-67">
 
     
     
     <figure class="mbr-figure align-center container">
         <div class="video-block" style="width: 100%;">
-            <div><iframe class="mbr-embedded-video" src="https://www.youtube.com/embed/aQSiUIaUQWo?rel=0&amp;amp;showinfo=0&amp;autoplay=0&amp;loop=0" width="1280" height="720" frameborder="0" allowfullscreen></iframe></div>
+            <div><iframe class="mbr-embedded-video" src="https://www.youtube.com/embed/5aVqeNggWSg?rel=0&amp;amp;showinfo=0&amp;autoplay=0&amp;loop=0" width="1280" height="720" frameborder="0" allowfullscreen></iframe></div>
         </div>
     </figure>
 </section>
 
-<section class="mbr-section content8 cid-sk88EH2kOW" id="content8-4f">
+<section class="mbr-section content8 cid-sup3CCZmqA" id="content8-68">
 
     
 
     <div class="container">
         <div class="media-container-row title">
             <div class="col-12 col-md-8">
-                <div class="mbr-section-btn align-center"><a class="btn btn-primary display-4" href="echtd_aula1.html" target="_blank">Aula anterior</a> <a class="btn btn-primary display-4" href="https://drive.google.com/file/d/1B43syT5UDFRarnDt56NvthuPIxHKdT9L/view?usp=sharing" target="_blank">Artigo 1</a> <a class="btn btn-primary display-4" href="https://drive.google.com/file/d/1cCf2z7z2UMjEhRih7nLgyEdF3PSqY3SW/view?usp=sharing" target="_blank">Artigo 2</a> <a class="btn btn-primary display-4" href="echtd.html" target="_blank">Curso</a></div>
+                <div class="mbr-section-btn align-center"><a class="btn btn-primary display-4" href="https://github.com/Fpschwartz1/cursos/tree/master/metodosinferenciais/Lab07" target="_blank">Scripts R</a></div>
             </div>
         </div>
     </div>
 </section>
 
-<section once="footers" class="cid-sk88EIKo9S" id="footer6-4g">
+<section class="mbr-section content8 cid-sup3CESCVE" id="content8-69">
+
+    
+
+    <div class="container">
+        <div class="media-container-row title">
+            <div class="col-12 col-md-8">
+                <div class="mbr-section-btn align-center"><a class="btn btn-black-outline display-4" href="httpsfabiano.cfmipl_aula12.html.html">Aula anterior</a>
+                    <a class="btn btn-black-outline display-4" href="mipl.html">Curso</a> <a class="btn btn-black-outline display-4" href="mipl_aula13.html">Próxima aula</a></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section once="footers" class="cid-sup3CIxDjv" id="footer6-6a">
 
     
 
@@ -119,7 +135,7 @@
             </div>
         </div>
     </div>
-</section><section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;"><a href="https://mobirise.site/r" style="flex: 1 1; height: 3rem; padding-left: 1rem;"></a><p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Site was <a href="https://mobirise.site/h" style="color:#aaa;">created with</a> Mobirise</p></section><script src="assets/web/assets/jquery/jquery.min.js"></script>  <script src="assets/popper/popper.min.js"></script>  <script src="assets/bootstrap/js/bootstrap.min.js"></script>  <script src="assets/tether/tether.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/dropdown/js/nav-dropdown.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>  <script src="assets/viewportchecker/jquery.viewportchecker.js"></script>  <script src="assets/theme/js/script.js"></script>  
+</section><section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;"><a href="https://mobirise.site/h" style="flex: 1 1; height: 3rem; padding-left: 1rem;"></a><p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Make a free <a href="https://mobirise.site/y" style="color:#aaa;">site</a> with Mobirise</p></section><script src="assets/web/assets/jquery/jquery.min.js"></script>  <script src="assets/popper/popper.min.js"></script>  <script src="assets/bootstrap/js/bootstrap.min.js"></script>  <script src="assets/tether/tether.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/dropdown/js/nav-dropdown.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>  <script src="assets/viewportchecker/jquery.viewportchecker.js"></script>  <script src="assets/theme/js/script.js"></script>  
   
   
  <div id="scrollToTop" class="scrollToTop mbr-arrow-up"><a style="text-align: center;"><i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i></a></div>
