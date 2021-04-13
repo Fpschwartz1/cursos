@@ -6,15 +6,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Mobirise v5.2.0, mobirise.com">
   <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:image:src" content="assets/images/mipl_aula3-meta.png">
-  <meta property="og:image" content="assets/images/mipl_aula3-meta.png">
-  <meta name="twitter:title" content="Aula 3 - Estatística Descritiva">
+  <meta name="twitter:image:src" content="assets/images/mipl_aula12-meta.png">
+  <meta property="og:image" content="assets/images/mipl_aula12-meta.png">
+  <meta name="twitter:title" content="Aula 12 - Premissas do Modelo de Regressão Linear">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
   <link rel="shortcut icon" href="assets/images/favicon-32x32.png" type="image/x-icon">
-  <meta name="description" content="Descreve técnicas de apresentação de dados: tabelas de distribuição de frequências, histogramas, medidas de tendência central (média, moda e mediana), medidas de dispersão (amplitude, amplitude interquartil, variância, desvio padrão e coeficiente de variação), distribuições simétricas e assimétricas, achatamento ou curtose.">
+  <meta name="description" content="Nesta aula aprenderemos a testar as premissas do modelo de regressão linear e discutiremos técnicas e conceitos que auxiliam na construção de um bom modelo e na decisão de se adicionar ou não preditores ao modelo:
+
+- Análise Residual
+- Identificação de outliers 
+- Inflação de variância: influência e alavancagem">
   
   
-  <title>Aula 3 - Estatística Descritiva</title>
+  <title>Aula 12 - Premissas do Modelo de Regressão Linear</title>
   <link rel="stylesheet" href="assets/web/assets/mobirise-icons/mobirise-icons.css">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
@@ -31,7 +35,7 @@
 </head>
 <body>
   
-  <section class="menu cid-rVNrllMVQe" once="menu" id="menu1-e">
+  <section class="menu cid-supsI4y52m" once="menu" id="menu1-6b">
 
     
 
@@ -63,7 +67,7 @@
     </nav>
 </section>
 
-<section class="header1 cid-rVNI4RWGKh" id="header16-l">
+<section class="header1 cid-supsI5MhZd" id="header16-6c">
 
     
 
@@ -72,9 +76,10 @@
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-md-10 align-center">
-                <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">Aula 3 - Estatística Descritiva</h1>
+                <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">Aula 12 - Premissas do Modelo de Regressão Linear</h1>
                 
-                <p class="mbr-text pb-3 mbr-fonts-style display-5">Descreve técnicas de apresentação de dados: tabelas de distribuição de frequências, histogramas, medidas de tendência central (média, moda e mediana), medidas de dispersão (amplitude, amplitude interquartil, variância, desvio padrão e coeficiente de variação), distribuições simétricas e assimétricas, achatamento ou curtose.</p>
+                <p class="mbr-text pb-3 mbr-fonts-style display-5">Nesta aula aprenderemos a testar as premissas do modelo de regressão linear e discutiremos técnicas e conceitos que auxiliam na construção de um bom modelo e na decisão de se adicionar ou não preditores ao modelo:
+Análise Residual;&nbsp;Identificação de outliers;&nbsp;Inflação de variância; influência e alavancagem.</p>
                 
             </div>
         </div>
@@ -82,45 +87,45 @@
 
 </section>
 
-<section class="cid-rVNHSyvwv0" id="video3-j">
+<section class="cid-supsI7t2kd" id="video3-6d">
 
     
     
     <figure class="mbr-figure align-center container">
         <div class="video-block" style="width: 100%;">
-            <div><iframe class="mbr-embedded-video" src="https://www.youtube.com/embed/rqilHikdzCg?rel=0&amp;amp;showinfo=0&amp;autoplay=0&amp;loop=0" width="1280" height="720" frameborder="0" allowfullscreen></iframe></div>
+            <div><iframe class="mbr-embedded-video" src="https://www.youtube.com/embed/5aVqeNggWSg?rel=0&amp;amp;showinfo=0&amp;autoplay=0&amp;loop=0" width="1280" height="720" frameborder="0" allowfullscreen></iframe></div>
         </div>
     </figure>
 </section>
 
-<section class="mbr-section content8 cid-rVNJ6Fz48H" id="content8-n">
+<section class="mbr-section content8 cid-supsI9hjO6" id="content8-6e">
 
     
 
     <div class="container">
         <div class="media-container-row title">
             <div class="col-12 col-md-8">
-                <div class="mbr-section-btn align-center"><a class="btn btn-primary display-4" href="https://github.com/Fpschwartz1/cursos/tree/master/metodosinferenciais/Aula03" target="_blank">Scripts R</a></div>
+                <div class="mbr-section-btn align-center"><a class="btn btn-primary display-4" href="https://github.com/Fpschwartz1/cursos/tree/master/metodosinferenciais/Aula12" target="_blank">Scripts R</a></div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="mbr-section content8 cid-s4AcngAXPs" id="content8-2a">
+<section class="mbr-section content8 cid-supsIb39cp" id="content8-6f">
 
     
 
     <div class="container">
         <div class="media-container-row title">
             <div class="col-12 col-md-8">
-                <div class="mbr-section-btn align-center"><a class="btn btn-black-outline display-4" href="mipl_aula2.html">Aula anterior</a>
-                    <a class="btn btn-black-outline display-4" href="mipl.html">Curso</a> <a class="btn btn-black-outline display-4" href="mipl_aula4.html">Próxima aula</a></div>
+                <div class="mbr-section-btn align-center"><a class="btn btn-black-outline display-4" href="mipl_aula11.html">Aula anterior</a>
+                    <a class="btn btn-black-outline display-4" href="mipl.html">Curso</a> <a class="btn btn-black-outline display-4" href="mipl_lab7.html">Próxima aula</a></div>
             </div>
         </div>
     </div>
 </section>
 
-<section once="footers" class="cid-s4zrFVRN32" id="footer6-15">
+<section once="footers" class="cid-supsIcRQRy" id="footer6-6g">
 
     
 
@@ -133,7 +138,7 @@
             </div>
         </div>
     </div>
-</section><section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;"><a href="https://mobirise.site/q" style="flex: 1 1; height: 3rem; padding-left: 1rem;"></a><p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Start a site - <a href="https://mobirise.site/v" style="color:#aaa;">Check this</a></p></section><script src="assets/web/assets/jquery/jquery.min.js"></script>  <script src="assets/popper/popper.min.js"></script>  <script src="assets/bootstrap/js/bootstrap.min.js"></script>  <script src="assets/tether/tether.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/dropdown/js/nav-dropdown.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>  <script src="assets/viewportchecker/jquery.viewportchecker.js"></script>  <script src="assets/theme/js/script.js"></script>  
+</section><section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;"><a href="https://mobirise.site/z" style="flex: 1 1; height: 3rem; padding-left: 1rem;"></a><p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Start your own website - <a href="https://mobirise.site/v" style="color:#aaa;">Check it</a></p></section><script src="assets/web/assets/jquery/jquery.min.js"></script>  <script src="assets/popper/popper.min.js"></script>  <script src="assets/bootstrap/js/bootstrap.min.js"></script>  <script src="assets/tether/tether.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/dropdown/js/nav-dropdown.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>  <script src="assets/viewportchecker/jquery.viewportchecker.js"></script>  <script src="assets/theme/js/script.js"></script>  
   
   
  <div id="scrollToTop" class="scrollToTop mbr-arrow-up"><a style="text-align: center;"><i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i></a></div>
