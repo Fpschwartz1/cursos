@@ -1,0 +1,622 @@
+---
+title: "Aula 8 - Teste t-Student"
+author: "Fabiano Peruzzo Schwartz"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Gráficos
+
+## Distribuição *t*
+
+```{r, echo = FALSE}
+library(ggplot2)
+
+k <- 1000
+xvals <- seq(-5, 5, length = k)
+
+d <- data.frame(y = c(dt(xvals, 1), dt(xvals, 3), dt(xvals, 5), dnorm(xvals)),
+                x = xvals,
+                dist = factor(rep(c("gl = 1", "gl = 2", "gl = 3", "norm"), c(k,k,k,k))))
+g <- ggplot(d, aes(x = x, y = y)) 
+g <- g + geom_line(size = 1, aes(colour = dist)) + xlab("x") + ggtitle("Distribuição t")
+g
+
+```
+
+## Intervalos de Confiança 95%
+
+```{r, echo = FALSE}
+x <- seq(-15, 15, .01)
+
+df <- c(1, 5, 9)
+colors <- c("black", "purple", "red", "green")
+labels <- c("norm", df[1], df[2], df[3])
+
+# curva normal padrao
+plot(x, dnorm(x), xlab="x", type="l", lwd = 2,
+     ylab="Densidade", main="Distribuições t com diferentes graus de liberdade")
+xt <- 1.96; yt <- dnorm(xt)
+lines(c(xt,xt), c(-1,yt), lwd=2)
+lines(c(-xt,-xt), c(-1,yt), lwd=2)
+legend("topleft", inset=.1, title="gl",
+       labels[1], lwd=2, lty=1, col=colors[1])
+
+# curvas t
+
+for(i in 1:3){
+  legend("topleft", inset=.1, title="gl", labels[1:(i+1)], lwd=2, lty=1, col=colors[1:(i+1)])
+  lines(x, dt(x,df[i]), lwd=2, col=colors[i+1])
+  xt <- qt(.975,df[i]); yt  <- dt(xt, df[i])
+  lines(c(xt,xt), c(-1,yt), lwd=2, col=colors[i+1])
+  lines(c(-xt,-xt), c(-1,yt), lwd=2, col=colors[i+1])
+}
+
+```
+
+## Teste de hipótese com uma amostra - Exemplo 1
+
+```{r, echo = FALSE}
+rm(list = ls(all = TRUE))
+
+cores=c("red", "blue")
+
+n <- 4
+
+media1 <- 58.29
+
+media2 <- 61
+ep2 <- 18/sqrt(n)
+
+nc <- 0.95 # nivel de confianca
+alpha <- 1 - nc # nivel de significancia
+
+cn2 <- function(x) {dnorm(x,media2,ep2)} # curva normal
+
+lim <- c(20,100)
+x <- seq(lim[1], lim[2], by = 0.01)
+
+# curva normal
+plot(x, cn2(x), ylab="Densidade", xlab="x",
+     main="Teorema Central do Limite", type="n", lwd=2)
+lines(c(media2, media2), c(-1, cn2(media2)), lwd=2, col="orange") # media2
+lines(lim,c(0,0))
+
+# intervalo de confianca 95% da curva normal
+ic <- seq(media2+qnorm(alpha/2)*ep2, media2+qnorm(nc+alpha/2)*ep2, by = 0.01)
+polygon(c(min(ic), ic, max(ic)), c(0, cn2(ic),0), col=scales::alpha(col=cores[2],.4), border=cores[2])
+
+# limites do intervalo de confianca
+ll <- min(ic)
+ul <- max(ic)
+
+# reforca as linhas
+lines(c(media2, media2), c(-1,max(cn2(x))), col="orange", lwd=2) # media2
+lines(c(ll, ll), c(-1, cn2(ll)), lwd=2) # ll
+lines(c(ul, ul), c(-1, cn2(ul)), lwd=2) # ll
+lines(x,cn2(x),lwd=2, type="l")
+lines(lim,c(0,0))
+
+lines(c(media1, media1), c(-1, cn2(media1)), lwd=2, col="red") # media1
+lines(lim,c(0,0))
+text(ll,0.004,round(ll,2),pos=4)
+text(ul,0.004,round(ul,2),pos=2)
+
+# intervalo de confianca 95% - student
+ic <- seq(media2+qt(alpha/2,n-1)*ep2, media2+qt(nc+alpha/2,n-1)*ep2, by = 0.01)
+polygon(c(min(ic), ic, max(ic)), c(0, cn2(ic),0), col=scales::alpha(col=cores[1],.4), border=cores[1])
+
+# limites do intervalo de confianca
+ll <- min(ic)
+ul <- max(ic)
+
+# reforca as linhas
+lines(c(media2, media2), c(-1,max(cn2(x))), col="orange", lwd=2) # media2
+lines(c(ll, ll), c(-1, cn2(ll)), lwd=2) # ll
+lines(c(ul, ul), c(-1, cn2(ul)), lwd=2) # ll
+lines(x,cn2(x),lwd=2, type="l")
+lines(lim,c(0,0))
+
+lines(c(media1, media1), c(-1, cn2(media1)), lwd=2, col="red") # media1
+lines(lim,c(0,0))
+text(ll,0.002,round(ll,2),pos=2)
+text(ul,0.002,round(ul,2),pos=4)
+
+```
+
+## Teste de hipótese com uma amostra - Exemplo 2
+
+```{r, echo = FALSE}
+rm(list = ls(all = TRUE))
+
+cores=c("red", "blue")
+
+# a1 <- c(81.16598, 37.90000, 66.07775, 58.78311)
+n <- 17
+
+media1 <- 52
+
+media2 <- 61
+ep2 <- 18/sqrt(n)
+
+nc <- 0.95 # nivel de confianca
+alpha <- 1 - nc # nivel de significancia
+
+cn2 <- function(x) {dnorm(x,media2,ep2)} # curva normal
+
+lim <- c(46,76)
+x <- seq(lim[1], lim[2], by = 0.01)
+
+# curva normal
+plot(x, cn2(x), ylab="Densidade", xlab="x",
+     main="Teorema Central do Limite", type="n", lwd=2)
+lines(c(media2, media2), c(-1, cn2(media2)), lwd=2, col="orange") # media2
+lines(lim,c(0,0))
+
+# intervalo de confianca 95% - curva normal
+ic <- seq(media2+qnorm(alpha/2)*ep2, media2+qnorm(nc+alpha/2)*ep2, by = 0.01)
+polygon(c(min(ic), ic, max(ic)), c(0, cn2(ic),0), col=scales::alpha(col=cores[2],.4), border=cores[2])
+
+# limites do intervalo de confianca
+ll <- min(ic)
+ul <- max(ic)
+
+# reforca as linhas
+lines(c(media2, media2), c(-1,max(cn2(x))), col="orange", lwd=2) # media2
+lines(c(ll, ll), c(-1, cn2(ll)), lwd=2) # ll
+lines(c(ul, ul), c(-1, cn2(ul)), lwd=2) # ll
+lines(x,cn2(x),lwd=2, type="l")
+lines(lim,c(0,0))
+
+lines(c(media1, media1), c(-1, cn2(media1)), lwd=2, col="red") # media1
+lines(lim,c(0,0))
+text(ll,0.007,round(ll,2),pos=4)
+text(ul,0.007,round(ul,2),pos=2)
+
+# intervalo de confianca 95% - student
+ic <- seq(media2+qt(alpha/2,n-1)*ep2, media2+qt(nc+alpha/2,n-1)*ep2, by = 0.01)
+polygon(c(min(ic), ic, max(ic)), c(0, cn2(ic),0), col=scales::alpha(col=cores[1],.4), border=cores[1])
+
+# limites do intervalo de confianca
+ll <- min(ic)
+ul <- max(ic)
+
+# reforca as linhas
+lines(c(media2, media2), c(-1,max(cn2(x))), col="orange", lwd=2) # media2
+lines(c(ll, ll), c(-1, cn2(ll)), lwd=2) # ll
+lines(c(ul, ul), c(-1, cn2(ul)), lwd=2) # ll
+lines(x,cn2(x),lwd=2, type="l")
+lines(lim,c(0,0))
+
+lines(c(media1, media1), c(-1, cn2(media1)), lwd=2, col="red") # media1
+lines(lim,c(0,0))
+text(ll,0.004,round(ll,2),pos=2)
+text(ul,0.004,round(ul,2),pos=4)
+
+```
+
+## Teste de hipótese para duas amostras
+
+```{r, echo = FALSE}
+rm(list = ls(all = TRUE))
+cores=c("red", "blue")
+
+# amostras
+set.seed(76453)
+a1 <- rnorm(25,21,2.7)
+a2 <- rnorm(32,24,5)
+
+nc <- 0.95
+n1 <- length(a1); n2 <- length(a2)
+media1 <- mean(a1); media2 <- mean(a2)
+dp1 <- sd(a1); dp2 <-  sd(a2)
+ep1 <- dp1/sqrt(n1); ep2 <- dp2/sqrt(n2)
+
+# eixo x das curvas
+lim <- c(
+  min(c(media1+c(-4,4)*ep1, media2+c(-4,4)*ep2)), 
+  max(c(media1+c(-4,4)*ep1, media2+c(-4,4)*ep2))
+)
+
+x <- seq(lim[1], lim[2], by = 0.01)
+
+# curva normal
+cn1 <- function(x) {dnorm(x,media1,ep1)} # curva normal 1
+cn2 <- function(x) {dnorm(x,media2,ep2)} # curva normal 2
+  
+# traca a curva 1
+plot(x,cn1(x),ylab="Densidade",xlab="x",
+         main="Teste de hipotese para duas amostras",type="l",lwd=1.5, col=cores[1])
+
+# intervalos de confianca
+xI11 <- media1 - qt(nc+(1-nc)/2,n1-1)*ep1
+xI12 <- media1 + qt(nc+(1-nc)/2,n1-1)*ep1
+xI21 <- media2 - qt(nc+(1-nc)/2,n2-1)*ep2
+xI22 <- media2 + qt(nc+(1-nc)/2,n2-1)*ep2
+
+ic <- seq(xI11, xI12, by = 0.01)
+polygon(c(min(ic), ic, max(ic)), c(0, cn1(ic),0), col=scales::alpha(col=cores[1],.4), border = cores[1])
+
+ic <- seq(xI21, xI22, by = 0.01)
+polygon(c(min(ic), ic, max(ic)), c(0, cn2(ic),0), col=scales::alpha(col=cores[2],.4), border = cores[2])
+
+# linhas das medias
+lines(c(media1,media1),c(-1,cn1(media1)),lwd=1.5, col = cores[1])
+lines(c(media2,media2),c(-1,cn2(media2)),lwd=1.5, col = cores[2])
+
+# linha das curvas
+if(!is.null(dp2)) lines(x,cn2(x),lwd=2, col = cores[2])
+if(!is.null(dp1)) lines(x,cn1(x),lwd=2, col = cores[1])
+
+# linha horizontal em zero
+lines(lim,c(0,0))
+
+sprintf("ic11: m1 - %4.3f * %4.3f = %4.3f  ic12: m1 + %4.3f * %4.3f = %4.3f", 
+          qt(nc+(1-nc)/2,n1-1), ep1, xI11,
+          qt(nc+(1-nc)/2,n1-1), ep1, xI12)
+
+sprintf("ic21: m2 - %4.3f * %4.3f = %4.3f  ic22: m2 + %4.3f * %4.3f = %4.3f", 
+          qt(nc+(1-nc)/2,n2-1), ep2, xI21,
+          qt(nc+(1-nc)/2,n2-1), ep2, xI22)
+
+```
+
+## Teste de hipótese - status quo
+
+```{r, echo = FALSE}
+rm(list = ls(all = TRUE))
+
+cores=c("red", "blue")
+
+n <- 20
+
+nc <- 0.95 # nivel de confianca
+alpha <- 1 - nc # nivel de significancia
+
+ct1 <- function(t, gl) {dt(t, gl)} # curva de student
+
+lim <- c(qt(.0025, n-1), qt(.9975, n-1))
+t <- seq(lim[1], lim[2], by = 0.001)
+
+# curva t
+plot(t, ct1(t, n-1), ylab="Densidade", xlab="t",
+     main=paste0("Distribuição t (gl = ", n-1, ")"), type="l", lwd=2)
+lines(c(0,0), c(-1, ct1(0, n-1)), lwd=2, col="orange") 
+lines(lim,c(0,0))
+
+# limites do intervalo de confianca
+ll <- qt(alpha/2,n-1)
+ul <- qt(nc+alpha/2,n-1)
+
+# linhas do intervalo de confianca
+lines(c(ll, ll), c(-1, ct1(ll, n-1)), lwd=1.5) # ll
+lines(c(ul, ul), c(-1, ct1(ul, n-1)), lwd=1.5) # ul
+
+# intervalo de confianca 95% - student
+ic <- seq(ll, ul, by = 0.01)
+
+# medias
+sq <- 51.5
+media <- 61
+dp <- 18
+
+tgl <- (media - sq)/(dp/sqrt(n))
+# linha tgl
+lines(c(tgl,tgl), c(-1,ct1(tgl, n-1)), col="red", lwd=1.5)
+
+text(tgl, c(-1,ct1(tgl, n-1)), round(tgl,2), col="red", pos=3)
+text(ll, 0.02, round(ll,2), pos = 4)
+text(ul, 0.02, round(ul,2), pos = 2)
+
+```
+
+## Grupos Pareados
+
+```{r, echo = FALSE}
+rm(list = ls(all = TRUE))
+
+# Grafico 1
+data(sleep)
+g <- sleep$extra + abs(min(sleep$extra))
+g1 <- g[1 : 10]; g2 <- g[11 : 20]; n <- 10
+plot(c(0.5, 2.5), range(g1, g2), type = "n", frame = FALSE, xlab = "grupos pareados", ylab = "Medidas", axes = FALSE)
+axis(2)
+axis(1, at = 1 : 2, labels = c("controle", "experimental"))
+for (i in 1 : n) points(1, g1[i], lwd = 2, col = "black", bg = "green", pch = 21, cex = 2)
+for (i in 1 : n) points(c(1, 2), c(g1[i], g2[i]), lwd = 2, col = "black", bg = "green", pch = 21, cex = 2)
+for (i in 1 : n) lines(c(1, 2), c(g1[i], g2[i]), lwd = 2, col=scales::alpha(col="#55EE88",.8))
+
+for(i in c(7, 10, 4)){
+  lines(c(1,2.2), c(g1[i],g1[i]), lty=2)
+  lines(c(2,2.2), c(g2[i],g2[i]), lty=2)
+  lines(c(2.1,2.1), c(g1[i],g2[i]), lty=2)
+  text(2.1, mean(c(g1[i],g2[i])), paste0("dy",i," = ",g2[i]-g1[i]), pos=4)
+}
+
+
+# Grafico 2
+cores=c("red", "blue")
+
+n <- 10
+nc <- 0.95 # nivel de confianca
+alpha <- 1 - nc # nivel de significancia
+
+ct1 <- function(t, gl) {dt(t, gl)} # curva de student
+
+#lim <- c(qt(.0025, n-1), qt(.9975, n-1))
+lim <- c(-5,5)
+t <- seq(lim[1], lim[2], by = 0.001)
+
+# curva t
+plot(t, ct1(t, n-1), ylab="Densidade", xlab="t",
+     main=paste0("Distribuição t (gl = ", n-1, ")"), type="l", lwd=2)
+lines(c(0,0), c(-1, ct1(0, n-1)), lwd=2, col="orange") 
+lines(lim,c(0,0))
+
+# limites do intervalo de confianca
+ll <- qt(alpha/2,n-1)
+ul <- qt(nc+alpha/2,n-1)
+
+# linhas do intervalo de confianca
+lines(c(ll, ll), c(-1, ct1(ll, n-1)), lwd=1.5) # ll
+lines(c(ul, ul), c(-1, ct1(ul, n-1)), lwd=1.5) # ul
+text(ll,0.05,round(ll,3), pos = 2, cex = 0.7)
+text(ul,0.05,round(ul,3), pos = 4, cex = 0.7)
+
+# intervalo de confianca 95% - student
+ic <- seq(ll, ul, by = 0.01)
+
+# linhas do intervalo de confianca e principal
+lines(c(ll, ll), c(-1, ct1(ll, n-1)), lwd=1.5) # ll
+lines(c(ul, ul), c(-1, ct1(ul, n-1)), lwd=1.5) # ul
+lines(t,ct1(t, n-1),lwd=2, type="l")
+
+# medias
+dif <- g1-g2
+dif_media <- mean(dif)
+dp <- sd(dif)
+
+tgl <- (dif_media)/(dp/sqrt(n))
+
+# intervalo confianca
+ll <- dif_media + qt(alpha/2,n-1)*dp/sqrt(length(g1))
+ul <- dif_media + qt(nc+alpha/2,n-1)*dp/sqrt(length(g1))
+lines(c(dif_media, dif_media), c(-1, ct1(dif_media, n-1)), col="red")
+lines(c(ll, ll), c(-1, 0), col="red")
+lines(c(ul, ul), c(-1, 0), col="red")
+
+# linha tgl
+lines(c(tgl,tgl), c(-1,ct1(tgl, n-1)), col="red", lwd=1.5)
+text(tgl,0.02,round(tgl,3), pos = 3, col="red")
+```
+
+## Grupos Independentes - variâncias iguais
+
+```{r, echo = FALSE}
+rm(list = ls(all = TRUE))
+
+cores=c("red", "blue")
+
+n1 <- 25
+n2 <- 30
+n <- n1 + n2
+gl <- n - 2 
+
+nc <- 0.95 # nivel de confianca
+alpha <- 1 - nc # nivel de significancia
+
+ct1 <- function(t, gl) {dt(t, gl)} # curva de student
+
+lim <- c(qt(.0025, gl), qt(.9975, gl))
+t <- seq(lim[1], lim[2], by = 0.001)
+
+# curva t
+plot(t, ct1(t, gl), ylab="Densidade", xlab="t",
+     main=paste0("Distribuição t (gl = n1 + n2 - 2 = ", gl, ")"), type="l", lwd=2)
+lines(c(0,0), c(-1, ct1(0, gl)), lwd=2, col="orange") 
+lines(lim,c(0,0))
+
+# limites do intervalo de confianca
+ll <- qt(alpha/2,gl)
+ul <- qt(nc+alpha/2,gl)
+
+# linhas do intervalo de confianca
+lines(c(ll, ll), c(-1, ct1(ll, gl)), lwd=1.5) # ll
+lines(c(ul, ul), c(-1, ct1(ul, gl)), lwd=1.5) # ul
+text(ll,0.02,round(ll,3), pos = 4)
+text(ul,0.02,round(ul,3), pos = 2)
+
+# intervalo de confianca 95% - student
+ic <- seq(ll, ul, by = 0.01)
+
+# medias
+media1 <- 22
+s1 <- 1.4
+media2 <- 21
+s2 <- 1.5
+
+sp2 <- ((n1-1)*s1^2 + (n2-1)*s2^2) / (n1+n2-2)
+
+EP <- sqrt(sp2) * sqrt((1/n1) + (1/n2))
+
+tgl <- (media1 - media2) / EP
+
+# linha tgl
+lines(c(tgl,tgl), c(-1,ct1(tgl, gl)), col="red", lwd=1.5)
+text(tgl,0.02,round(tgl,3), pos = 3, col="red")
+
+sprintf("Variância ponderada: sp2 = ((n1-1)*s1^2 + (n2-1)*s2^2) / (n1+n2-2) = %4.3f", sp2)
+sprintf("Erro Padrão: EP = sqrt(sp2) * sqrt((1/n1) + (1/n2)) = %4.3f", EP)
+sprintf("Estatística t: t = (media1 - media2) / EP = %4.3f", tgl)
+
+```
+
+## Grupos Independentes - variâncias diferentes
+
+```{r, echo = FALSE}
+rm(list = ls(all = TRUE))
+
+cores=c("red", "blue")
+
+# medias
+media1 <- 22
+s1 <- 1.3
+n1 <- 23
+media2 <- 21.5
+s2 <- 2.7
+n2 <- 32
+
+# graus de liberdade
+gl <- (s1^2/n1 + s2^2/n2)^2 / ((s1^2/n1)^2/(n1-1) + (s2^2/n2)^2/(n2-1)) 
+
+nc <- 0.95 # nivel de confianca
+alpha <- 1 - nc # nivel de significancia
+
+ct1 <- function(t, gl) {dt(t, gl)} # curva de student
+
+lim <- c(qt(.0025, gl), qt(.9975, gl))
+t <- seq(lim[1], lim[2], by = 0.001)
+
+# curva t
+plot(t, ct1(t, gl), ylab="Densidade", xlab="t",
+     main=paste0("Distribuição t (gl = ", round(gl,3), ")"), type="l", lwd=2)
+lines(c(0,0), c(-1, ct1(0, gl)), lwd=2, col="orange") 
+lines(lim,c(0,0))
+
+# limites do intervalo de confianca
+ll <- qt(alpha/2,gl)
+ul <- qt(nc+alpha/2,gl)
+
+# linhas do intervalo de confianca
+lines(c(ll, ll), c(-1, ct1(ll, gl)), lwd=1.5) # ll
+lines(c(ul, ul), c(-1, ct1(ul, gl)), lwd=1.5) # ul
+text(ll,0.02,round(ll,3), pos = 4)
+text(ul,0.02,round(ul,3), pos = 2)
+
+# intervalo de confianca 95% - student
+ic <- seq(ll, ul, by = 0.01)
+
+EP <- sqrt( s1^2/n1 + s2^2/n2 )
+
+tgl <- (media1 - media2) / EP
+
+# linha tgl
+lines(c(tgl,tgl), c(-1,ct1(tgl, gl)), col="red", lwd=1.5)
+text(tgl,0.02,round(tgl,3), pos = 3, col="red")
+
+
+sprintf("Graus de liberdade: gl = gl <- (s1^2/n1 + s2^2/n2)^2 / ((s1^2/n1)^2/(n1-1) + (s2^2/n2)^2/(n2-1)) = %4.3f", gl)
+sprintf("Erro Padrão: EP = sqrt( s1^2/n1 + s2^2/n2 ) = %4.3f", EP)
+sprintf("Estatística t: t = (media1 - media2) / EP = %4.3f", tgl)
+
+```
+
+# Função **t.test()**
+
+## Status quo
+
+```{r}
+# status-quo
+sq <- 51.5
+
+x <- c(93.40688, 34.99308, 52.19035, 33.00398, 60.85803,
+       80.15329, 47.01693, 69.04670, 55.44296, 85.34853,
+       58.32174, 87.11655, 53.80200, 53.63225, 61.70659,
+       40.72228, 61.10561, 66.04668, 86.28181, 39.82519)
+
+t.test(x, mu=sq)
+
+```
+
+## Grupos pareados
+
+```{r}
+# grupos pareados
+a1 <- c(2.3, 0.0, 1.4, 0.4, 1.5, 5.0, 5.3, 2.4, 1.6, 3.6)
+a2 <- c(3.5, 2.4, 2.7, 1.7, 1.5, 6.0, 7.1, 3.2, 6.2, 5.0)
+
+t.test(a1, a2, paired = TRUE, var.equal = TRUE)
+
+```
+
+
+## Grupos independentes - variâncias iguais
+
+```{r}
+# grupos independentes - variancias iguais
+#set.seed(57830)
+# a1 <- rnorm(25, 21.989, 1.1535)
+a1 <- c(24.18751, 20.00562, 21.22403, 19.86628, 21.83883,
+        23.20288, 20.85793, 22.44734, 21.45421, 23.57761,
+        21.65793, 23.69565, 21.33809, 21.33315, 21.90242,
+        20.41248, 21.89598, 22.21946, 23.63658, 20.34899,
+        21.58881, 20.59255, 24.85809, 24.25010, 21.61999)
+
+#set.seed(57830)
+#a2 <- rnorm(30, 20.91, 1.3465)
+a2 <- c(23.47635, 18.59477, 20.01704, 18.43211, 20.73471,
+        22.32699, 19.58968, 21.44502, 20.28573, 22.76441, 
+        20.52354, 22.90220, 20.15018, 20.14442, 20.80894,
+        19.06970, 20.80142, 21.17903, 22.83325, 18.99559,
+        20.44286, 19.27990, 24.25914, 23.54942, 20.47925,
+        21.10211, 21.41440, 21.26698, 21.34999, 21.78228)
+
+t.test(a1, a2, var.equal = TRUE)
+
+media1 <- mean(a1)
+s1 <- sd(a1)
+n1 <- length(a1)
+media2 <- mean(a2)
+s2 <- sd(a2)
+n2 <- length(a2)
+
+sp2 <- ((n1-1)*s1^2 + (n2-1)*s2^2) / (n1+n2-2)
+
+ep <- sqrt(sp2)*sqrt((1/n1)+(1/n2))
+
+(media1 - media2) + c(-1,1)*qt(.975, 53)*ep
+
+```
+
+## Grupos independentes - variâncias diferentes
+
+```{r}
+# grupos independentes - variancias diferentes
+#set.seed(578301)
+# a1 <- rnorm(23, 21.98, 1.168)
+a1 <- c(22.55839, 22.54998, 23.78845, 20.58032, 22.28616,
+        23.66850, 21.87726, 24.85481, 20.58217, 20.60274,
+        21.59821, 22.17370, 22.06624, 23.41259, 20.62497,
+        21.84104, 22.05482, 20.98034, 22.70375, 22.27651,
+        20.54948, 19.28819, 23.08621)
+
+#set.seed(57830)
+#a2 <- rnorm(32, 21.2627, 2.43025)
+a2 <- c(25.89462, 17.08402, 19.65103, 16.79044, 20.94632,
+        23.82017, 18.87970, 22.22834, 20.13598, 24.60966,
+        20.56519, 24.85836, 19.89132, 19.88092, 21.08029,
+        17.94120, 21.06673, 21.74825, 24.73390, 17.80745,
+        20.41957, 18.32058, 27.30744, 26.02649, 20.48526,
+        21.60943, 22.17308, 21.90701, 22.05682, 22.83704,
+        24.93095, 20.31521)
+
+t.test(a1, a2)
+
+media1 <- mean(a1)
+s1 <- sd(a1)
+n1 <- length(a1)
+media2 <- mean(a2)
+s2 <- sd(a2)
+n2 <- length(a2)
+
+ep <- sqrt( (s1^2 / n1) + (s2^2 / n2) )
+
+gl<- (((s1^2 / n1) + (s2^2 / n2))^2) / 
+        ((((s1^2 / n1)^2)/(n1-1)) + (((s2^2 / n2)^2)/(n2-1)))
+
+(media1 - media2) + c(-1,1)*qt(.975, gl)*ep
+
+```
