@@ -1,1 +1,246 @@
+---
+title: "Correlação"
+author: "Fabiano Schwartz"
+output: html_document
+---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# Contas Eleitorais
+
+Dados referentes às eleições de 2018 extraídos do [Repositório de Dados Eleitorais](https://www.tse.jus.br/eleicoes/estatisticas/repositorio-de-dados-eleitorais-1) do Tribunal Superior Eleitoral - TSE.
+
+Arquivos utilizados:
+
+* [consulta_cand_2018_DF.csv](https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_2018.zip)
+* [receitas_candidatos_2018_DF.csv](https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/prestacao_de_contas_eleitorais_candidatos_2018.zip)
+* [despesas_contratadas_candidatos_2018_DF.csv](https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/prestacao_de_contas_eleitorais_candidatos_2018.zip)
+* [bweb_1t_DF_101020181947.csv](https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2018/correspefet/1t/CEFT_1t_DF_111020180053.zip)
+
+## Candidatos a Deputado Federal no DF em 2018
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+cargo <- 6 # deputado federal
+
+# candidatos
+cand <- read.csv2("consulta_cand_2018_DF.csv")
+
+cand <- cand %>% 
+        filter(CD_CARGO == cargo, NR_TURNO == 1, DS_SITUACAO_CANDIDATURA == "APTO") %>%
+        group_by(NR_CANDIDATO, NM_CANDIDATO, NM_URNA_CANDIDATO,
+        NR_CPF_CANDIDATO, NR_IDADE_DATA_POSSE, SG_PARTIDO, DS_CARGO)  %>%
+        arrange(NR_CANDIDATO)
+cand <- cand[, c("NR_CANDIDATO", "NM_CANDIDATO", "NM_URNA_CANDIDATO",
+        "NR_CPF_CANDIDATO", "NR_IDADE_DATA_POSSE", "SG_PARTIDO", "DS_CARGO")]
+sum(is.na(cand))  
+
+```
+
+## Receita
+
+```{r}
+# receita candidato
+rec <- read.csv2("receitas_candidatos_2018_DF.csv")
+
+rec <- rec %>% 
+       filter(CD_CARGO == cargo) %>%
+       group_by(NR_CANDIDATO, NM_CANDIDATO, 
+                NR_CPF_CANDIDATO, SG_PARTIDO, DS_CARGO) %>%
+       summarise(VR_TOTAL_REC = sum(VR_RECEITA)) %>%
+       arrange(NR_CANDIDATO)
+rec$NR_CPF_CANDIDATO <- as.character(rec$NR_CPF_CANDIDATO)
+rec$NR_CPF_CANDIDATO <- paste0("00000",rec$NR_CPF_CANDIDATO)
+rec$NR_CPF_CANDIDATO <- str_sub(rec$NR_CPF_CANDIDATO, -11)
+sum(is.na(rec))
+```
+
+## Despesas
+
+```{r}
+
+# despesas candidatos
+desp <- read.csv2("despesas_contratadas_candidatos_2018_DF.csv")
+
+desp <- desp %>% 
+        filter(CD_CARGO == cargo) %>%
+        group_by(NR_CANDIDATO, NM_CANDIDATO, 
+                 NR_CPF_CANDIDATO, SG_PARTIDO, DS_CARGO) %>%
+        summarise(VR_TOTAL_DESP = sum(VR_DESPESA_CONTRATADA)) %>%
+        arrange(NR_CANDIDATO)
+desp$NR_CPF_CANDIDATO <- as.character(desp$NR_CPF_CANDIDATO)
+desp$NR_CPF_CANDIDATO <- paste0("00000",desp$NR_CPF_CANDIDATO)
+desp$NR_CPF_CANDIDATO <- str_sub(desp$NR_CPF_CANDIDATO, -11)
+sum(is.na(desp))
+```
+
+# Boletim de Urna
+
+```{r}
+# boletim de urna - inclui nr votos
+burna <- read.csv2("bweb_1t_DF_101020181947.csv")
+
+burna <- burna %>% 
+         filter(CD_CARGO_PERGUNTA == cargo, 
+                !(NR_VOTAVEL %in% c("95","96","97","98","#NULO#"))) %>%
+         group_by(NR_VOTAVEL, NM_VOTAVEL) %>%
+         summarise(QT_TOTAL_VOTOS = sum(QT_VOTOS)) %>%
+         arrange(NR_VOTAVEL)
+burna$NR_VOTAVEL <- as.numeric(burna$NR_VOTAVEL)
+#burna <- burna[burna$NR_VOTAVEL >= 100, ]
+names(burna)[1] <- "NR_CANDIDATO"
+```
+
+# Combina dados de candidato, receita, despesas e votos
+
+```{r}
+# combina candidato + receitas + despesas
+cand <- merge(cand, rec[,c("NR_CPF_CANDIDATO","VR_TOTAL_REC")], by = "NR_CPF_CANDIDATO", all.x = TRUE )
+cand <- merge(cand, desp[,c("NR_CPF_CANDIDATO","VR_TOTAL_DESP")], by = "NR_CPF_CANDIDATO", all.x = TRUE)
+# merge
+cand <- merge(cand, burna, by = "NR_CANDIDATO", all.x = TRUE)
+
+
+write.csv2(cand, paste0("CandidatosDF_", cand[1,"DS_CARGO"],"_2018.csv"))
+
+head(cand)
+```
+
+## Covariação
+
+```{r}
+
+mrec <- mean(cand$VR_TOTAL_REC, na.rm = TRUE)/1000
+mvotos <- mean(cand$QT_TOTAL_VOTOS, na.rm = TRUE)/1000
+
+cand_cor <- cand[ cand$NR_CANDIDATO %in% c(4515,4040,9017,1313,1300,   3100, 1236, 3600), ]
+cand_cor <- cand_cor[c(7,6,8,3,2,4,5,1),]
+cand_cor$VR_TOTAL_REC <- cand_cor$VR_TOTAL_REC/1000
+cand_cor$QT_TOTAL_VOTOS <- cand_cor$QT_TOTAL_VOTOS/1000
+
+
+par(mfrow=c(1,2))
+
+plot(cand_cor$VR_TOTAL_REC, 
+     xlab = "Candidato", ylab = "Receita R$ (x 1000)",
+     main = paste0("Receita Média = R$ ", round(mrec*1000,2)), type = "n")
+lines(c(0,nrow(cand_cor)+1), c(mrec,mrec))
+# correlacao positiva
+for(i in 1:5){
+  lines(c(i,i), c(mrec,cand_cor$VR_TOTAL_REC[i]), col = "blue")
+}
+points(1:5, cand_cor$VR_TOTAL_REC[1:5], col = "blue", bg = "lightblue", 
+       pch=21, cex=1.2)
+# correlacao negativa
+for(i in 6:8){
+  lines(c(i,i), c(mrec,cand_cor$VR_TOTAL_REC[i]), col="red")
+}
+points(6:8, cand_cor$VR_TOTAL_REC[6:8], col = "red", bg = "pink", 
+       pch=21, cex=1.2)
+
+plot(cand_cor$QT_TOTAL_VOTOS, 
+     xlab = "Candidato", ylab = "Votos (x 1000)",
+     main = paste0("Média de Votos = ", round(mvotos*1000,0)), type = "n")
+lines(c(0,nrow(cand_cor)+1), c(mvotos,mvotos))
+# correlacao positiva
+for(i in 1:5){
+  lines(c(i,i), c(mvotos,cand_cor$QT_TOTAL_VOTOS[i]), col = "blue")
+}
+points(1:5, cand_cor$QT_TOTAL_VOTOS[1:5], col = "blue", bg = "lightblue", 
+       pch=21, cex=1.2)
+# correlacao negativa
+for(i in 6:8){
+  lines(c(i,i), c(mvotos,cand_cor$QT_TOTAL_VOTOS[i]), col="red")
+}
+points(6:8, cand_cor$QT_TOTAL_VOTOS[6:8], col = "red", bg = "pink", 
+       pch=21, cex=1.2)
+
+par(mfrow=c(1,1))
+
+
+# Covariancia
+# calculo para os 8 candidatos do exemplo
+cand_cor$VR_TOTAL_REC <- cand_cor$VR_TOTAL_REC*1000
+cand_cor$QT_TOTAL_VOTOS <- cand_cor$QT_TOTAL_VOTOS*1000
+sum((cand_cor$VR_TOTAL_REC - mean(cand_cor$VR_TOTAL_REC))*(cand_cor$QT_TOTAL_VOTOS - mean(cand_cor$QT_TOTAL_VOTOS)))/7
+# calculo para todos os candidatos do exemplo
+sum((cand$VR_TOTAL_REC - mean(cand$VR_TOTAL_REC,na.rm = TRUE))*(cand$QT_TOTAL_VOTOS - mean(cand$QT_TOTAL_VOTOS, na.rm=TRUE)),na.rm = TRUE)/nrow(cand)
+
+```
+
+## Correlação
+
+```{r}
+# correlacao do exemplo com 8 candidatos
+cor(cand_cor$VR_TOTAL_REC, cand_cor$QT_TOTAL_VOTOS)
+
+library(ggplot2)
+# base com todos os candidatos
+# VR_TOTAL_REC vs. VR_TOTAL_DESP
+plot(cand$VR_TOTAL_REC/1000, cand$VR_TOTAL_DESP/1000, 
+     xlab = "Receitas R$ (x1000)", ylab = "Despesas R$ (x1000)", 
+     main = "Candidatos a Deputado Federal - DF/2018")
+
+ggplot(cand[,c("VR_TOTAL_REC","VR_TOTAL_DESP")]/1000, aes(VR_TOTAL_REC, VR_TOTAL_DESP))+
+  geom_point()+xlab("Receitas R$ (x1000)")+ylab("Despesas R$ (x1000)")+
+  ggtitle("Candidatos a Deputado Federal - DF/2018")
+cor.test(cand$VR_TOTAL_REC,cand$VR_TOTAL_DESP)
+
+# VR_TOTAL_REC vs. VR_TOTAL_DESP
+plot(cand$VR_TOTAL_REC,cand$QT_TOTAL_VOTOS)
+cor.test(cand$VR_TOTAL_REC,cand$QT_TOTAL_VOTOS)
+hist(cand$VR_TOTAL_REC)
+hist(cand$QT_TOTAL_VOTOS)
+
+
+cor.test(cand$VR_TOTAL_DESP,cand$QT_TOTAL_VOTOS)
+
+
+```
+
+## Gráficos adicionais
+
+### Distribuição normal bidimensional
+
+```{r}
+# https://rpubs.com/EstatBasica/Cap8
+
+library(mvtnorm)
+xy<-seq(-4,4,0.1)
+mu=c(0,0)
+Sigma=diag(2)
+Z1<-matrix(NA,length(xy),length(xy))
+for(i in 1:length(xy)){
+  for(j in 1:length(xy)){
+    Z1[i,j]<-dmvnorm(x=c(xy[i],xy[j]), mean=mu, sigma=Sigma)
+  }
+}
+
+persp(Z1, phi = 30, theta = 30,col = "lightblue", ticktype = "detailed",xlab="X",expand = 0.8)
+
+```
+
+
+### Dispersão 3D
+
+```{r}
+# https://rpubs.com/EstatBasica/Cap8
+
+library(rgl)
+library(scatterplot3d)
+
+n <- 100; 
+x2 <- runif(n) 
+x1 <- runif(n)
+beta0 <- 0; beta1 <- 1; tau <- 4 ; sigma <- .01
+
+y <- beta0 + x1 * beta1 + tau * x2 + rnorm(n, sd = sigma)
+
+scatterplot3d(x1,x2, y,box=TRUE)
+
+```
