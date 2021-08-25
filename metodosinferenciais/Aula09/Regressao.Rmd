@@ -1,0 +1,414 @@
+---
+title: "Regressão"
+author: "Fabiano Schwartz"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# Contas Eleitorais
+
+Dados referentes às eleições de 2018 extraídos do [Repositório de Dados Eleitorais](https://www.tse.jus.br/eleicoes/estatisticas/repositorio-de-dados-eleitorais-1) do Tribunal Superior Eleitoral - TSE.
+
+Arquivos utilizados:
+
+* [consulta_cand_2018_DF.csv](https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_2018.zip)
+* [receitas_candidatos_2018_DF.csv](https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/prestacao_de_contas_eleitorais_candidatos_2018.zip)
+* [despesas_contratadas_candidatos_2018_DF.csv](https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/prestacao_de_contas_eleitorais_candidatos_2018.zip)
+* [bweb_1t_DF_101020181947.csv](https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2018/correspefet/1t/CEFT_1t_DF_111020180053.zip)
+
+Arquivos consolidado, gerado pelo script **Correlacao.Rmd**: **CandidatosDF_DEPUTADO FEDERAL_2018.csv**
+
+
+## Candidatos a Deputado Federal no DF em 2018
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+# candidatos
+cand <- read.csv2("CandidatosDF_DEPUTADO FEDERAL_2018.csv")
+cand$DS_CARGO <- cand$X <- NULL
+cand$NM_VOTAVEL <- cand$NM_URNA_CANDIDATO <- NULL
+ 
+knitr::kable(head(cand))
+
+dim(cand)
+```
+
+## Formalização matemática da regressão
+
+```{r}
+library(ggplot2)
+# cand <- cand2
+# cand <- cand[!(cand$NR_CANDIDATO %in% c(9090, 5555, 9033, 1310)), ]
+
+ggplot(cand[,c("VR_TOTAL_REC","VR_TOTAL_DESP")]/1000, aes(VR_TOTAL_REC, VR_TOTAL_DESP))+
+  xlab("Receitas R$ (x1000)")+ylab("Despesas R$ (x1000)")+
+  ggtitle("Candidatos a Deputado Federal - DF/2018")+
+  geom_point()+geom_smooth(se = FALSE, method = "lm")
+
+plot(cand$VR_TOTAL_REC/1000, cand$VR_TOTAL_DESP/1000, 
+     main = "Candidatos a Deputado Federal - DF/2018",
+     xlab = "Receitas R$ (x1000)", ylab = "Despesas R$ (x1000)")
+grid()
+lm.dep <- lm(I(cand$VR_TOTAL_DESP/1000) ~ I(cand$VR_TOTAL_REC/1000))
+abline(lm.dep, col = "blue", lwd = 2)
+points(mean(lm.dep$model$`I(cand$VR_TOTAL_REC/1000)`),
+       mean(lm.dep$model$`I(cand$VR_TOTAL_DESP/1000)`),
+       col="red", bg="red", pch=21, lwd = 4)
+lines(c(mean(lm.dep$model$`I(cand$VR_TOTAL_REC/1000)`),
+        mean(lm.dep$model$`I(cand$VR_TOTAL_REC/1000)`)),
+      c(-1000, mean(lm.dep$model$`I(cand$VR_TOTAL_DESP/1000)`)),
+      col="red", lwd=2, lty=2)
+lines(c(-1000, mean(lm.dep$model$`I(cand$VR_TOTAL_REC/1000)`)),
+      c(mean(lm.dep$model$`I(cand$VR_TOTAL_DESP/1000)`),
+        mean(lm.dep$model$`I(cand$VR_TOTAL_DESP/1000)`)),
+      col="red", lwd=2, lty=2)
+
+for(i in 1:nrow(cand)){
+  lines(c(lm.dep$model$`I(cand$VR_TOTAL_REC/1000)`[i],
+          lm.dep$model$`I(cand$VR_TOTAL_REC/1000)`[i]),
+        c(lm.dep$model$`I(cand$VR_TOTAL_DESP/1000)`[i],
+          lm.dep$fitted.values[i]),
+        col="red", lwd=1)
+}
+
+```
+
+## Amostras
+
+```{r}
+library(ggplot2)
+n <- 25
+# set.seed(67834)
+set.seed(678342)
+am1 <- cand[sample(1:nrow(cand), n), ]
+am2 <- cand[sample(1:nrow(cand), n), ]
+am3 <- cand[sample(1:nrow(cand), n), ]
+
+plot(am1$VR_TOTAL_REC/1000, am1$VR_TOTAL_DESP/1000, 
+     main = "Candidatos a Deputado Federal - DF/2018",
+     xlab = "Receitas R$ (x1000)", ylab = "Despesas R$ (x1000)", col = "blue", bg = "blue", pch=21)
+grid()
+lm1.dep <- lm(I(am1$VR_TOTAL_DESP/1000) ~ I(am1$VR_TOTAL_REC/1000))
+abline(lm1.dep, col = "blue", lwd = 2)
+
+points(am2$VR_TOTAL_REC/1000, am2$VR_TOTAL_DESP/1000, col="red", bg="red", pch=21)
+lm2.dep <- lm(I(am2$VR_TOTAL_DESP/1000) ~ I(am2$VR_TOTAL_REC/1000))
+abline(lm2.dep, col = "red", lwd = 2)
+
+points(am3$VR_TOTAL_REC/1000, am3$VR_TOTAL_DESP/1000, col="green", bg="green", pch=21)
+lm3.dep <- lm(I(am3$VR_TOTAL_DESP/1000) ~ I(am3$VR_TOTAL_REC/1000))
+abline(lm3.dep, col = "green", lwd = 2)
+
+```
+
+## Amostras correspondentes a alguns *x* fixados
+
+```{r}
+cand2 <- cand
+
+# linhas com valores nulos
+cand2 <- cbind(cand2, somaNulos = rowSums(is.na(cand2)))
+# tratamento dos nulos
+cand2 <- cand2[cand2$somaNulos == 0, ]
+# retira somaNulos
+cand2$somaNulos <- NULL
+
+sum(is.na(cand2))
+
+cand2 <- cand2[cand2$VR_TOTAL_REC <= 200000,]
+cand2$VR_TOTAL_REC2 <- round(cand2$VR_TOTAL_REC/20000,1)
+cand2$VR_TOTAL_REC2 <- cand2$VR_TOTAL_REC2 * 20000
+table(cand2$VR_TOTAL_REC2)
+
+sum(is.na(cand2))
+
+n <- 30
+set.seed(67834)
+v <- c(4000, 6000, 8000, 10000, 16000, 18000, 20000, 28000, 30000, 54000)
+#n <- 40
+#set.seed(6715834)
+# v <- c(2000, 4000, 6000, 8000, 10000, 12000, 16000, 1800, 20000, 28000, 30000, 54000, 58000, 150000)
+#v <- c(2000, 6000, 10000, 12000, 16000, 1800, 20000, 28000, 30000, 54000, 58000, 150000)
+
+am1 <- cand2[sample(1:nrow(cand2), n), ]
+am2 <- cand2[sample(1:nrow(cand2), n), ]
+am3 <- cand2[sample(1:nrow(cand2), n), ]
+
+table(am1$VR_TOTAL_REC2)
+table(am2$VR_TOTAL_REC2)
+table(am3$VR_TOTAL_REC2)
+
+am1 <- am1[am1$VR_TOTAL_REC2 %in% v, ]
+am2 <- am2[am2$VR_TOTAL_REC2 %in% v, ]
+am3 <- am3[am3$VR_TOTAL_REC2 %in% v, ]
+
+aux <- am1
+am1 <- am2
+am2 <- aux
+
+plot(am1$VR_TOTAL_REC2/1000, am1$VR_TOTAL_DESP/1000, 
+     main = "Candidatos a Deputado Federal - DF/2018",
+     xlab = "Receitas R$ (x1000)", ylab = "Despesas R$ (x1000)", col = "blue", bg = "blue", pch=21)
+grid()
+lm1.dep <- lm(I(am1$VR_TOTAL_DESP/1000) ~ I(am1$VR_TOTAL_REC2/1000))
+abline(lm1.dep, col = "blue", lwd = 2)
+
+points(am2$VR_TOTAL_REC2/1000, am2$VR_TOTAL_DESP/1000, col="red", bg="red", pch=21)
+lm2.dep <- lm(I(am2$VR_TOTAL_DESP/1000) ~ I(am2$VR_TOTAL_REC2/1000))
+abline(lm2.dep, col = "red", lwd = 2)
+
+points(am3$VR_TOTAL_REC2/1000, am3$VR_TOTAL_DESP/1000, col="green", bg="green", pch=21)
+lm3.dep <- lm(I(am3$VR_TOTAL_DESP/1000) ~ I(am3$VR_TOTAL_REC2/1000))
+abline(lm3.dep, col = "green", lwd = 2)
+
+lm.pop <- lm(I(cand$VR_TOTAL_DESP/1000) ~ I(cand$VR_TOTAL_REC/1000))
+abline(lm.pop, lwd = 2)
+
+legend(38, 20, legend=c("amostra 1", "amostra2 ", "amostra 3", "população"), col=c("blue", "red", "green", "black"),
+       lwd=3)
+
+```
+
+## Funções lineares e não lineares nos parâmetros
+
+```{r}
+x <- seq(0,10,0.1)
+
+par(mfrow=c(3,1))
+# função quadrática
+beta0 <- 5; beta1 <- 0; beta2 <- 1
+Y <- beta0 + beta1*(x-5) + beta2*(x-5)^2
+
+plot(x,Y, type = "l", main = "Função Quadrática")
+grid()
+
+e <- bquote(Y==beta[0]+beta[1]*x+beta[2]*x^2)
+text(5, 25, e, cex=1.5 )
+
+# função exponencial
+beta0 <- 1; beta1 <- 1
+Y <- exp(beta0 + beta1*x)
+
+plot(x,Y, type = "l", main = "Função Exponencial")
+grid()
+
+e <- bquote(Y==e^(beta[0]+beta[1]*x))
+text(4, 30000, e, cex=1.5 )
+
+# função cúbica
+beta0 <- 1; beta1 <- 1; beta2 <- 2; beta3 <- 2
+x2 <- x -5
+Y <- beta0 + beta1*(x2) + beta2*(x2)^2 + beta3*(x2)^3
+
+plot(x,Y, type = "l", main = "Função Cúbica")
+grid()
+
+e <- bquote(Y==beta[0]+beta[1]*x+beta[2]*x^2+beta[3]*x^3)
+text(4, 100, e, cex=1.5)
+
+par(mfrow=c(1,1))
+```
+
+
+## Adição de Erro Gaussiano
+
+```{r}
+horas <- seq(0,12,0.1)
+rl <- function(x) { 1.5 + 0.85*x }
+notas <- sapply(horas,rl)
+
+plot.new()
+plot.window(xlim=c(0,10), ylim=c(0,10))
+axis(1, 0:10, 0:10)
+axis(2, 0:10, 0:10)
+box()
+title("Métodos Inferenciais", 
+      xlab = "Horas de estudo semanais", ylab = "Nota Final")
+lines(c(-2,11), c(0,0))
+lines(c(0,0), c(-2,11))
+grid()
+
+# v <- c(1,3,5,7,9)
+v <- c(2,4,6,8)
+
+for(i in v){
+  lines(c(i,i), c(-2,11), lty="dotted", col = "gray")
+}
+
+set.seed(27773)
+for(i in v){ # pontos
+  mu <- rl(i)
+  points(rep(i,20),round(rnorm(20,mu,0.5),1))
+  
+  #vx <- c(-0.85, -0.7, -0.5, -0.3, -0.15, -0.1,  0.0,  0.15,  0.2,  0.3,  0.5, 0.7, 0.85)
+  #points(rep(i,length(vx)), mu + vx)
+}
+
+# media incondicional
+points(mean(v), mean(rl(v)),col="red", bg="red", pch=21, lwd=4)
+lines(c(mean(v),mean(v)), c(0,mean(rl(v))), lty="dotted", col = "red")
+lines(c(0,mean(v)), c(mean(rl(v)),mean(rl(v))), lty="dotted", col = "red")
+
+
+for(i in v){ # medias condicionais
+  mu <- rl(i)
+  points(i,mu, col="blue", bg="blue", pch=21, lwd=4)
+}
+
+lines(horas, notas, lwd = 2, col = "blue")
+
+for(i in v){
+  mu <- rl(i)
+  x <- seq(mu-2,mu+2,0.1)
+  lines(dnorm(x,mu,0.5)+i,x)
+  lines(c(i,max(dnorm(x,mu,0.5)+i)), c(mu,mu), lty="dashed")
+}
+
+
+```
+
+## Interpretação dos coeficientes de regressão - Métodos Inferenciais
+
+```{r}
+lm(notas ~ horas)
+```
+
+## Interpretação dos coeficientes de regressão - Pais e Filhos
+
+```{r}
+library(UsingR); data(galton)
+
+dimeixo <- function(x, y, xlim, ylim, inc, cex){
+  plot.new()
+  plot.window(xlim=c(xlim[1],xlim[2]), ylim=c(ylim[1],ylim[2]))
+  title(xlab="Altura pais (m)", ylab = "Altura filhos (m)")
+  axis(1, seq(xlim[1],xlim[2],inc), seq(xlim[1],xlim[2],inc))
+  axis(2, seq(ylim[1],ylim[2],inc), seq(ylim[1],ylim[2],inc))
+  box()
+  grid()
+
+  freqData <- as.data.frame(table(x, y))
+  names(freqData) <- c("pai","filho","freq")
+  
+  points(as.numeric(as.vector(freqData$pai)),
+         as.numeric(as.vector(freqData$filho)),
+         pch = 21, col = "black", bg = "lightblue",
+         cex = cex * freqData$freq)
+  points(mean(x), mean(y), col="red",pch=19,lwd=4)
+}
+
+# distribuicao filhos
+filho <- round(galton$child / 39.37008, 2)
+
+# distribuicao pais
+pai <- round(galton$parent / 39.37008, 2)
+
+x <- pai
+y <- filho
+rpf <- lm(filho ~ pai)
+
+par(mfrow=c(1,2))
+dimeixo(x, y, c(min(x), max(x)), c(min(y),max(y)), 0.05, 0.2)
+dimeixo(x, y, c(0, max(x)+1.1), c(0,max(y)+1.1), 0.5, 0.04)
+
+lines(c(0,0), c(-0.4,max(y)+1.2))
+lines(c(-0.4,max(x)+1.2), c(0,0))
+
+abline(rpf, col="blue")
+par(mfrow=c(1,1))
+
+summary(rpf)
+```
+
+
+## Deslocamento da variável *x* - Pais e Filhos
+
+```{r}
+lm(filho ~ I(pai - 1.73))
+```
+
+
+
+## Coeficientes de regressão - Candidatos - Receita *vs.* Votos
+
+```{r}
+receitas <- c(2000,  4000,  4000,  4000,  6000,  6000,
+              8000,  8000, 10000, 16000, 16000, 16000,
+              18000, 20000, 20000, 20000, 12000, 12000)/1000
+qt_votos <- c(173,  436,  476,  325,  451,  762,  726,
+              694, 1157, 1279, 1470, 1110, 1188, 1720,
+              1623, 1450, 1050,  840)
+
+plot.new()
+plot.window(xlim=c(0,20), ylim=c(0,1800))
+title(main = "Candidatos a Deputado Federal - DF/2018",
+     xlab = "Receitas R$ (x1000)", ylab = "Qtd. Votos")
+axis(1, seq(0,20,5), seq(0,20,5))
+axis(2, seq(0,2000,500), seq(0,2000,500))
+box()
+grid()
+
+points(receitas,qt_votos)
+
+lm.dep <- lm(qt_votos ~ receitas)
+abline(lm.dep, col = "blue", lwd = 2)
+points(0,lm.dep$coefficients[1],col="red", bg="red", pch=21, lwd=5)
+
+lm.dep
+
+
+receitas2 <- receitas * 0.2
+
+plot.new()
+plot.window(xlim=c(0,20), ylim=c(0,1800))
+title(main = "Candidatos a Deputado Federal - DF/2018",
+     xlab = "Receitas US$ (x1000)", ylab = "Qtd. Votos")
+axis(1, seq(0,20,5), seq(0,20,5))
+axis(2, seq(0,2000,500), seq(0,2000,500))
+box()
+grid()
+
+points(receitas2,qt_votos)
+
+lm.dep <- lm(qt_votos ~ receitas2)
+abline(lm.dep, col = "blue", lwd = 2)
+points(0,lm.dep$coefficients[1],col="red", bg="red", pch=21, lwd=5)
+
+lm.dep
+
+lm(qt_votos ~ I(receitas * 0.2))
+
+plot.new()
+plot.window(xlim=c(0,4), ylim=c(0,1800))
+title(main = "Candidatos a Deputado Federal - DF/2018",
+     xlab = "Receitas US$ (x1000)", ylab = "Qtd. Votos")
+axis(1, seq(0,4,1), seq(0,4,1))
+axis(2, seq(0,2000,500), seq(0,2000,500))
+box()
+grid()
+
+points(receitas2,qt_votos)
+
+abline(lm.dep, col = "blue", lwd = 2)
+points(0,lm.dep$coefficients[1],col="red", bg="red", pch=21, lwd=5)
+
+mur <- mean(receitas2)
+muv <- mean(qt_votos)  
+
+lines(c(mur, mur), c(-100, muv), col="red", lwd=1, lty=2)
+lines(c(-1, mur), c(muv, muv), col="red", lwd=1, lty=2)
+
+
+
+lm(qt_votos ~ I((receitas - mean(receitas)) * 0.2))
+
+```
+
+
+
