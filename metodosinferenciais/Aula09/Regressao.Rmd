@@ -404,11 +404,567 @@ muv <- mean(qt_votos)
 lines(c(mur, mur), c(-100, muv), col="red", lwd=1, lty=2)
 lines(c(-1, mur), c(muv, muv), col="red", lwd=1, lty=2)
 
-
-
 lm(qt_votos ~ I((receitas - mean(receitas)) * 0.2))
 
 ```
 
+# Estimadores
 
+## BLUE - Não viesado ou não tendencioso
+
+```{r}
+########
+xlim <- c(0.5,1.5)
+ylim <- c(-0.3,4)
+
+plot.new()
+plot.window(xlim=xlim, ylim=ylim)
+title("Não viesado")
+# axis(1, seq(xlim[1],xlim[2],0.1), seq(xlim[1],xlim[2],0.1))
+# axis(2, seq(ylim[1],ylim[2],0.5), seq(ylim[1],ylim[2],0.5))
+# box()
+grid()
+
+x <- seq(xlim[1],xlim[2],0.01)
+d <- dnorm(x, 1, 0.12)
+lines(x,d)
+
+# linhas dos eixos e media
+lines(c(1,1),c(0,max(d)), lwd=.5, lty=2)
+shape::Arrows(xlim[1],0,xlim[1],ylim[2], lwd=.5, arr.type = "triangle")
+shape::Arrows(xlim[1]-1,0,xlim[2],0, lwd=.5, arr.type = "triangle")
+
+# textos
+# eixo y
+e <- bquote(f(hat(beta)))
+text(0.5, 4, e, pos = 4)
+# eixo x
+e <- bquote(hat(beta))
+text(1.52, 0.04, e, pos = 1)
+# estimativa 1
+e <- bquote(hat(beta)[(1)])
+text(1.25, 0.04, e, pos = 1)
+lines(c(1.25,1.25), c(-0.05, 0.05))
+# estimativa 2
+e <- bquote(hat(beta)[(2)])
+text(0.74, 0.04, e, pos = 1)
+lines(c(0.74,0.74), c(-0.05, 0.05))
+# estimativa 3
+e <- bquote(hat(beta)[(3)])
+text(0.83, 0.04, e, pos = 1)
+lines(c(0.83,0.83), c(-0.05, 0.05))
+# valor esperado
+e <- bquote(beta==E(hat(beta)))
+text(1, 0.04, e, pos = 1)
+lines(c(1,1), c(-0.05, 0.05))
+
+
+```
+
+## Viesado ou tendencioso
+
+```{r}
+xlim <- c(0.5,1.5)
+ylim <- c(-0.3,4)
+
+plot.new()
+plot.window(xlim=xlim, ylim=ylim)
+title("Viesado")
+grid()
+
+x <- seq(xlim[1],xlim[2],0.01)
+d <- dnorm(x, 1, 0.12)
+lines(x,d)
+
+# linhas dos eixos e media
+lines(c(1,1),c(0,max(d)), lwd=.5, lty=2)
+shape::Arrows(xlim[1],0,xlim[1],ylim[2], lwd=.5, arr.type = "triangle")
+shape::Arrows(xlim[1]-1,0,xlim[2],0, lwd=.5, arr.type = "triangle")
+
+# textos
+# eixo y
+e <- bquote(f(tilde(beta)))
+text(0.5, 4, e, pos = 4)
+# eixo x
+e <- bquote(tilde(beta))
+text(1.52, 0.04, e, pos = 1)
+# estimativa 1
+e <- bquote(tilde(beta)[(1)])
+text(0.8, 0.04, e, pos = 1)
+lines(c(0.8,0.8), c(-0.05, 0.05))
+# estimativa 2
+e <- bquote(tilde(beta)[(2)])
+text(1.1, 0.04, e, pos = 1)
+lines(c(1.1,1.1), c(-0.05, 0.05))
+# estimativa 3
+e <- bquote(tilde(beta)[(3)])
+text(1.21, 0.04, e, pos = 1)
+lines(c(1.21,1.21), c(-0.05, 0.05))
+# valor esperado
+e <- bquote(E(tilde(beta)))
+text(1, 0.04, e, pos = 1)
+lines(c(1,1), c(-0.05, 0.05))
+# parâmetro estimado por beta til
+e <- bquote(beta)
+text(0.86, 0.01, e, pos = 1)
+lines(c(0.86,0.86), c(-0.05, 0.05))
+
+```
+
+
+## Variância pequena - não viesado
+
+```{r}
+########
+# Variância menor
+xlim <- c(0.5,1.5)
+ylim <- c(-0.3,4)
+
+plot.new()
+plot.window(xlim=xlim, ylim=ylim)
+title("Não viesado")
+grid()
+
+x <- seq(xlim[1],xlim[2],0.01)
+d <- dnorm(x, 1, 0.096)
+lines(x,d)
+
+# linhas dos eixos e media
+lines(c(1,1),c(0,max(d)), lwd=.5, lty=2)
+shape::Arrows(xlim[1],0,xlim[1],ylim[2], lwd=.5, arr.type = "triangle")
+shape::Arrows(xlim[1]-1,0,xlim[2],0, lwd=.5, arr.type = "triangle")
+
+# textos
+# eixo y
+e <- bquote(f(hat(beta)))
+text(0.5, 4, e, pos = 4)
+# eixo x
+e <- bquote(hat(beta))
+text(1.52, 0.04, e, pos = 1)
+# estimativa 1
+e <- bquote(hat(beta)[(1)])
+text(1.22, 0.04, e, pos = 1)
+lines(c(1.22,1.22), c(-0.05, 0.05))
+# estimativa 2
+e <- bquote(hat(beta)[(2)])
+text(0.81, 0.04, e, pos = 1)
+lines(c(0.81,0.81), c(-0.05, 0.05))
+# valor esperado
+e <- bquote(beta==E(hat(beta)))
+text(1, 0.04, e, pos = 1)
+lines(c(1,1), c(-0.05, 0.05))
+```
+
+## Variância maior - não viesado
+
+```{r}
+# Não viesado
+# Variância maior
+########
+xlim <- c(0.5,1.5)
+ylim <- c(-0.3,4)
+
+plot.new()
+plot.window(xlim=xlim, ylim=ylim)
+title("Não viesado")
+grid()
+
+x <- seq(xlim[1],xlim[2],0.01)
+d <- dnorm(x, 1, 0.15)
+lines(x,d)
+
+# linhas dos eixos e media
+lines(c(1,1),c(0,max(d)), lwd=.5, lty=2)
+shape::Arrows(xlim[1],0,xlim[1],ylim[2], lwd=.5, arr.type = "triangle")
+shape::Arrows(xlim[1]-1,0,xlim[2],0, lwd=.5, arr.type = "triangle")
+
+# textos
+# eixo y
+e <- bquote(f(tilde(beta)))
+text(0.5, 4, e, pos = 4)
+# eixo x
+e <- bquote(tilde(beta))
+text(1.52, 0.04, e, pos = 1)
+# estimativa 1
+e <- bquote(tilde(beta)[(1)])
+text(0.85, 0.04, e, pos = 1)
+lines(c(0.85,0.85), c(-0.05, 0.05))
+# estimativa 2
+e <- bquote(tilde(beta)[(2)])
+text(1.17, 0.04, e, pos = 1)
+lines(c(1.17,1.17), c(-0.05, 0.05))
+# valor esperado
+e <- bquote(beta==E(tilde(beta)))
+text(1, 0.04, e, pos = 1)
+lines(c(1,1), c(-0.05, 0.05))
+
+```
+
+
+## Estimativas coeficiente BETA 0
+
+```{r}
+xlim <- c(0.5,1.5)
+ylim <- c(-0.3,4)
+
+plot.new()
+plot.window(xlim=xlim, ylim=ylim)
+title("Intercepto")
+grid()
+
+x <- seq(xlim[1],xlim[2],0.01)
+d <- dnorm(x, 1, 0.096)
+lines(x,d)
+
+# linhas dos eixos e media
+lines(c(1,1),c(0,max(d)), lwd=.5, lty=2)
+shape::Arrows(xlim[1],0,xlim[1],ylim[2], lwd=.5, arr.type = "triangle")
+shape::Arrows(xlim[1]-1,0,xlim[2],0, lwd=.5, arr.type = "triangle")
+
+# textos
+# eixo y
+e <- bquote(f(hat(beta)[0]))
+text(0.5, 4, e, pos = 4)
+# eixo x
+e <- bquote(hat(beta)[0])
+text(1.52, 0.04, e, pos = 1)
+# estimativa 1
+e <- bquote(hat(beta)[0(1)])
+text(1.23, 0.04, e, pos = 1, col = "blue")
+lines(c(1.23,1.23), c(-0.05, 0.05))
+# estimativa 2
+e <- bquote(hat(beta)[0(2)])
+text(0.81, 0.04, e, pos = 1, col = "red")
+lines(c(0.81,0.81), c(-0.05, 0.05))
+# estimativa 3
+e <- bquote(hat(beta)[0(3)])
+text(1.13, 0.04, e, pos = 1, col = "darkgreen")
+lines(c(1.13,1.13), c(-0.05, 0.05))
+# valor esperado
+e <- bquote(beta[0]==E(hat(beta)[0]))
+text(1, 0.04, e, pos = 1)
+lines(c(1,1), c(-0.05, 0.05))
+
+```
+
+## Estimativas coeficiente BETA 1
+
+```{r}
+xlim <- c(0.5,1.5)
+ylim <- c(-0.3,4)
+
+plot.new()
+plot.window(xlim=xlim, ylim=ylim)
+title("Inclinação")
+grid()
+
+x <- seq(xlim[1],xlim[2],0.01)
+d <- dnorm(x, 1, 0.096)
+lines(x,d)
+
+# linhas dos eixos e media
+lines(c(1,1),c(0,max(d)), lwd=.5, lty=2)
+shape::Arrows(xlim[1],0,xlim[1],ylim[2], lwd=.5, arr.type = "triangle")
+shape::Arrows(xlim[1]-1,0,xlim[2],0, lwd=.5, arr.type = "triangle")
+
+# textos
+# eixo y
+e <- bquote(f(hat(beta)[1]))
+text(0.5, 4, e, pos = 4)
+# eixo x
+e <- bquote(hat(beta)[1])
+text(1.52, 0.04, e, pos = 1)
+# estimativa 1
+e <- bquote(hat(beta)[1(1)])
+text(0.77, 0.04, e, pos = 1, col = "blue")
+lines(c(0.77,0.77), c(-0.05, 0.05))
+# estimativa 2
+e <- bquote(hat(beta)[1(2)])
+text(1.2, 0.04, e, pos = 1, col = "red")
+lines(c(1.2,1.2), c(-0.05, 0.05))
+# estimativa 3
+e <- bquote(hat(beta)[1(3)])
+text(0.86, 0.04, e, pos = 1, col = "darkgreen")
+lines(c(0.86,0.86), c(-0.05, 0.05))
+# valor esperado
+e <- bquote(beta[1]==E(hat(beta)[1]))
+text(1, 0.04, e, pos = 1)
+lines(c(1,1), c(-0.05, 0.05))
+```
+
+## Intervalos de Confiança
+
+```{r}
+horas <- seq(0,12,0.1)
+rl <- function(x) { 1.5 + 0.85*x }
+notas <- sapply(horas,rl)
+
+plot.new()
+plot.window(xlim=c(0,10), ylim=c(0,10))
+axis(1, 0:10, 0:10)
+axis(2, 0:10, 0:10)
+box()
+title("Métodos Inferenciais", 
+      xlab = "Horas de estudo semanais", ylab = "Nota Final")
+lines(c(-2,11), c(0,0))
+lines(c(0,0), c(-2,11))
+grid()
+
+v <- c(2,4,6,8)
+
+for(i in v){
+  lines(c(i,i), c(-2,11), lty="dotted", col = "gray")
+}
+
+x <- NULL
+Y <- NULL
+vy <- c(-0.85, -0.7, -0.5, -0.3, -0.15, -0.1,  0.0,  0.15,  0.2,  0.3,  0.5, 0.7, 0.85)
+set.seed(27773)
+for(i in v){ # pontos
+  mu <- rl(i)
+
+  x <- c(x, rep(i,length(vy)))
+  Y <- c(Y, mu + vy)
+}
+
+points(x,Y)
+
+lines(horas, notas, lwd = 2, col = "blue")
+
+for(i in v){ # medias condicionais
+  mu <- rl(i)
+  points(i,mu, col="blue", bg="blue", pch=21, lwd=5)
+}
+
+#points(6,rl(6)+0.85)
+#lines(c(6,6), c(rl(6), rl(6)+0.85), col = "red")
+#e <- bquote(epsilon[1])
+#e <- bquote(italic(e)[1])
+#text(6, rl(6)+0.4, e, pos = 2, cex = 1.3, col = "red")
+
+# x sem medições
+xp <- 7.3
+yp <- rl(xp)
+points(xp, yp,col="red", bg="red", pch=21, lwd=5)
+#lines(c(xp,xp), c(0,yp), lty="dotted", col = "red")
+#lines(c(0,xp), c(yp,yp), lty="dotted", col = "red")
+lines(c(xp,xp), c(-0.1,0.1), col = "red")
+
+
+# Intervalos de Confiança
+n <- length(x)
+nc <- .95
+tc <- nc + (1-nc)/2 # tc = t crítico
+fit <- lm(Y ~ x)
+beta0 <- coef(fit)[1]
+beta1 <- coef(fit)[2]
+xVals <- seq(0,10,0.1)
+yVals <- beta0 + beta1 * xVals
+sigma <- sqrt(sum(fit$residuals^2) / (n-2))
+ssx <- sum((x - mean(x))^2)
+se1 <- sigma * sqrt(1 / n + (xVals - mean(x))^2 / ssx)
+se2 <- sigma * sqrt(1 + 1 / n + (xVals - mean(x))^2 / ssx)
+lines(xVals, yVals + qt(tc,n-2) * se1, col="blue")
+lines(xVals, yVals - qt(tc,n-2) * se1, col="blue")
+lines(xVals, yVals + qt(tc,n-2) * se2, col="red")
+lines(xVals, yVals - qt(tc,n-2) * se2, col="red")
+
+source("lmIC.R")
+```
+
+```{r}
+lmIC(x,Y,4)
+lmIC(x,Y,5)
+
+```
+
+
+## Análise residual - Votos *vs.* Receitas
+
+```{r, echo=FALSE}
+x <- c(2000,  4000,  4000,  4000,  6000,  6000,
+       8000,  8000, 10000, 16000, 16000, 16000,
+       18000, 20000, 20000, 20000, 12000, 12000)/1000
+Y <- c(173,  436,  476,  325,  451,  762,  726,
+       694, 1157, 1279, 1470, 1110, 1188, 1720,
+       1623, 1450, 1050,  840)
+fit <- lm(Y ~ x)
+
+x2 <- rep(c(2,5,9,13,15,19),5)
+set.seed(111)
+Y2 <- fit$coefficients[1] + fit$coefficients[2] * x2 + rnorm(length(x2),0,200)
+
+x <- c(x, x2)
+Y <- c(Y, Y2)
+Y <- round(Y,0)
+
+df <- data.frame(x, Y)
+df <- df[df$Y > 0,]
+```
+
+```{r}
+fit <- lm(Y ~ x, df)
+
+par(mfrow=c(1,2))
+
+plot(df$x, df$Y, main = "Candidatos a Deputado Federal - DF/2018",
+     xlab = "Receitas R$ (x1000)", ylab = "Qtd. Votos")
+grid()
+abline(fit, col="blue")
+
+# resíduos vs x
+plot(df$x, fit$residuals, main = "Resíduos vs. x",
+     xlab = "Receitas R$ (x1000)", ylab = "Resíduos",
+     col="red")
+lines(c(0,30),c(0,0))
+#for(i in 1:length(df$x)){
+#        lines(c(df$x[i],df$x[i]),
+#              c(0,fit$residuals[i]),
+#              col="red")
+#}
+grid()
+par(mfrow=c(1,1))
+
+
+# resíduos padronizados
+par(mfrow=c(1,2))
+plot(df$x, df$Y, main = "Candidatos a Deputado Federal - DF/2018",
+     xlab = "Receitas R$ (x1000)", ylab = "Qtd. Votos")
+grid()
+abline(fit, col="blue")
+
+# resíduos normalizados vs x
+e <- bquote(Resíduos/sigma[e])
+plot(df$x, fit$residuals/sd(fit$residuals), main = "Resíduos Padronizados vs. x",
+     xlab = "Receitas R$ (x1000)", ylab = e,
+     col="red")
+lines(c(0,30),c(0,0))
+grid()
+par(mfrow=c(1,1))
+
+# histograma residuos
+hist(fit$residuals, breaks=6, col = "orange")
+shapiro.test(fit$residuals)
+
+round(mean(fit$residuals),10)
+```
+
+## Análise residual - padrão senoidal
+
+```{r}
+set.seed(2334578)
+par(mfrow=c(1,2))
+x <- runif(100, -3, 3)
+y <- x + sin(x) + rnorm(100, sd = .2)
+par(mfrow=c(1,2))
+par(cex.axis=0.8, cex.main=0.9)
+## gráfico de dispersão
+plot(x, y, main="Exemplo 2")
+fit <- lm(y ~ x)
+abline(fit)
+## gráfico do resíduo em função de x
+plot(x, fit$residuals, ylab = "Resíduo")
+lines(c(-4,4),c(0,0))
+# variação senoidal
+y <- x + sin(x)
+fit <- lm(y ~ x)
+lines(x[order(x)],fit$residuals[order(x)], col="red", lwd=2)
+title(main = "Padrão Senoidal")
+par(mfrow=c(1,1))
+
+```
+
+
+## Análise residual - variância dependente de *x*
+
+```{r}
+set.seed(2334578)
+par(mfrow=c(1,2))
+x <- runif(100, 0, 6)
+y <- x + rnorm(100, mean = 0, sd = .01 * x)
+par(mfrow=c(1,2))
+par(cex.axis=0.8, cex.main=0.9)
+## gráfico de dispersão
+plot(x, y, main="Exemplo 3")
+fit <- lm(y ~ x)
+abline(fit)
+## gráfico do resíduo em função de x
+plot(x, fit$residuals, ylab = "Resíduo")
+lines(c(-1,7),c(0,0))
+lines(c(0,x[order(fit$residuals)[1]]),c(0,min(fit$residuals)), col="red")
+lines(c(0,x[order(fit$residuals)[length(x)]]),c(0,max(fit$residuals)), col="red")
+title(main = "Variância dependente de x")
+par(mfrow=c(1,1))
+```
+
+## Coeficiente de Determinação - *R^2*
+
+```{r}
+plot(pai, filho, xlab="Altura pais (m)", ylab = "Altura filhos (m)", cex = 0.7)
+lines(c(0,2), c(mean(filho), mean(filho)), col = "darkgreen", lwd = 1.5)
+points(1.79, 1.83, col = "red", bg = "red", pch = 21, lwd = 3)
+lines(c(1.79,1.79), c(mean(filho), 1.83), col = "red", lwd = 1.5)
+
+lines(c(1.805,1.805),c(mean(filho), 1.83), lty="dotted", col="red")
+lines(c(1.803,1.807), c(mean(filho),mean(filho)), col="red")
+lines(c(1.803,1.807), c(1.83,1.83), col="red")
+e <- bquote(V[T])
+text(1.805, 1.785, e, col="red", pos = 4)
+
+rpf <- lm(filho ~ pai)
+abline(rpf, col="blue")
+
+ymu <- rpf$coefficients[1] + rpf$coefficients[2] * 1.79
+lines(c(1.795,1.795),c(mean(filho),ymu), lty="dotted", col="blue")
+lines(c(1.79,1.797), c(ymu,ymu), col="blue")
+lines(c(1.793,1.797), c(mean(filho),mean(filho)), col="blue")
+e <- bquote(V[RR])
+text(1.793, 1.745, e, col="blue", pos = 4)
+
+lines(c(1.785,1.785),c(ymu,1.83), lty="dotted", col="green")
+lines(c(1.783,1.79), c(ymu,ymu), col="green")
+lines(c(1.783,1.787), c(1.83,1.83), col="green")
+e <- bquote(V[RE])
+text(1.785, 1.795, e, col="green", pos = 2)
+
+
+summary(lm(filho ~ pai))
+
+
+data(anscombe)
+par(mfrow = c(2, 2), mar = 0.1+c(4,4,2,1), oma =  c(0, 0, 2, 0))
+t <- c("(a)","(b)","(c)","(d)")
+## y ~ x
+for(i in 1:4){
+    x <- anscombe[,i]
+    y <- anscombe[,i+4]
+    plot(x, y, col = "red", pch = 21, bg = "orange", cex = 1.2,
+         xlim = c(3, 19), ylim = c(3, 13), main=t[i])
+    abline(lm(y ~ x), col = "blue")
+    points(mean(x), mean(y), pch = 15, col="red")
+}
+
+```
+
+## Funções *summary* e *lm* - horas de estudo
+
+```{r}
+rl <- function(x) { 1.5 + 0.85*x }
+
+v <- c(2,4,6,8)
+
+horas <- NULL
+notas <- NULL
+vy <- c(-0.85, -0.7, -0.5, -0.3, -0.15, -0.1,  0.0,  0.15,  0.2,  0.3,  0.5, 0.7, 0.85)
+set.seed(27773)
+for(i in v){ # pontos
+  mu <- rl(i)
+
+  horas <- c(horas, rep(i,length(vy)))
+  notas <- c(notas, mu + vy)
+}
+```
+```{r}
+summary(lm(notas ~ horas))
+```
 
