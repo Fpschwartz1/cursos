@@ -43,19 +43,6 @@ g2 = ggplot(dat, aes(y = ey, x = ex1, colour = x2))
 g2 = g2 + geom_point(colour="grey50", size = 5) + geom_smooth(method = lm, se = FALSE, colour = "black") + geom_point(size = 4)
 g2
 
-# inversão de sinal - exemplo 2
-n <- 100; x2 <- 1 : n; x1 <- .01 * x2 + runif(n, -.1, .1);
-y = -x1 + x2 + rnorm(n, sd = .01)
-summary(lm(y ~ x1))$coef
-summary(lm(y ~ x1 + x2))$coef
-dat = data.frame(y = y, x1 = x1, x2 = x2, ey = resid(lm(y ~ x2)), ex1 = resid(lm(x1 ~ x2)))
-g = ggplot(dat, aes(y = y, x = x1, colour = x2))
-g = g + geom_point(colour="grey50", size = 5) + geom_smooth(method = lm, se = FALSE, colour = "black")
-g = g + geom_point(size = 4)
-g
-g2 = ggplot(dat, aes(y = ey, x = ex1, colour = x2))
-g2 = g2 + geom_point(colour="grey50", size = 5) + geom_smooth(method = lm, se = FALSE, colour = "black") + geom_point(size = 4)
-g2
 
 # quanto o modelo explica o índice de fertilidade
 summary(lm(Fertility ~ Agriculture
@@ -79,4 +66,21 @@ cor(swiss$Education, swiss$Examination)
 
 # e se incluirmos uma variável desnecessaria
 z <- swiss$Agriculture + swiss$Education
-lm(Fertility ~ . + z, data = swiss)
+fit <- lm(Fertility ~ . + z, data = swiss)
+summary(fit)
+
+
+# predicao de valores
+fit <- lm(Fertility ~ Agriculture
+          + Education
+          + Catholic
+          + Infant.Mortality
+          , data = swiss)
+summary(fit)
+
+df <- data.frame(Agriculture=c(0,50),Examination=c(0,50),
+                 Education=c(0,50),Catholic=c(0,50),Infant.Mortality=c(0,50))
+df
+
+predict(fit, df, interval = "confidence")
+predict(fit, df, interval = "prediction")
