@@ -150,6 +150,8 @@ summary(fit6)
 anova(fit2,fit6)
 # .. porque caminha para overffiting ...
 # que eh quando o modelo se ajusta muito bem ao conjunto de dados
+# a inlfacao de variancia nao compensa
+vif(fit6)
 
 # entao fechamos o modelo em fit2: prestige ~ education + income
 
