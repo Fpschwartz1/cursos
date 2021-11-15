@@ -37,6 +37,15 @@ bptest(y2 ~ x)
 dwtest(Fertility ~ ., data = swiss, alternative = "two.sided")
 
 
+# exemplo de modelo com premissas atendidas
+library(car)
+fit <- lm(prestige ~ women + education + type, data = Prestige)
+shapiro.test(fit$residuals) # distribuicao normal
+bptest(fit) # variancia constante
+dwtest(fit) # independencia dos residuos
+
+
+
 
 
 
