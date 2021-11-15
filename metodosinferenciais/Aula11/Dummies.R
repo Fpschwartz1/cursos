@@ -3,6 +3,7 @@ require(stats)
 require(graphics)
 data(InsectSprays); head(InsectSprays)
 ? InsectSprays
+
 boxplot(count ~ spray, data = InsectSprays, col = "lightgray",
         xlab="Tipo do spray", ylab="Quantidade de insetos")
 # modelo linear
